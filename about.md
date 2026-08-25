@@ -28,6 +28,7 @@
 ## 联系我
 
 - 💬 技术交流：GitHub Issues / Discussions
+- 📧 邮箱：[rdszdl@163.com](mailto:rdszdl@163.com)
 - 🌐 GitHub：[jason5200](https://github.com/jason5200)
 - 📖 博客：jason5200.github.io
 
