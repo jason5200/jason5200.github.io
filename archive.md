@@ -51,6 +51,9 @@
 | 2026-08-27 | [Service 的启动与绑定机制](articles/framework/service-bind.md) |
 | 2026-08-27 | [Activity 生命周期与异常恢复](articles/framework/lifecycle-restore.md) |
 | 2026-08-27 | [Activity 启动模式与任务栈](articles/framework/launch-mode.md) |
+| 2026-08-27 | [CarPropertyService 属性读写源码](articles/car-service/carproperty-source.md) |
+| 2026-08-27 | [量化感知训练 QAT 的完整流程](articles/ai/qat.md) |
+| 2026-08-27 | [MessageQueue 的 native 层 next 唤醒源码](articles/framework/messagequeue-source.md) |
 | 2026-08-27 | [llama.cpp 采样算法的完整源码](articles/ai/llamacpp-sampling.md) |
 | 2026-08-27 | [View 硬件加速的完整源码](articles/framework/hw-render-source.md) |
 | 2026-08-27 | [Binder 驱动 binder_transaction 的完整源码](articles/framework/binder-transaction-source.md) |
@@ -133,4 +136,4 @@
 
 ---
 
-> 共 **112 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **115 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
