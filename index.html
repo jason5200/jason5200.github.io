@@ -55,8 +55,30 @@
             '<a href="https://github.com/jason5200/jason5200.github.io" target="_blank">博客源码</a>',
             '</footer>'
           ].join('');
+
           hook.afterEach(function (html) {
             return html + footer;
+          });
+
+          // Mermaid：把 <pre data-lang="mermaid"> 转成 <div class="mermaid">（正确选择器）
+          hook.afterEach(function (html) {
+            var wrap = document.createElement('div');
+            wrap.innerHTML = html;
+            wrap.querySelectorAll('pre[data-lang="mermaid"]').forEach(function (pre) {
+              var div = document.createElement('div');
+              div.className = 'mermaid';
+              div.textContent = pre.textContent;
+              pre.parentNode.replaceChild(div, pre);
+            });
+            return wrap.innerHTML;
+          });
+
+          // 每次页面切换后渲染 mermaid
+          hook.doneEach(function () {
+            if (window.mermaid) {
+              mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
+              mermaid.run({ querySelector: '.mermaid' });
+            }
           });
         }
       ]
@@ -70,14 +92,8 @@
   <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
   <!-- TOC 目录插件 -->
   <script src="//cdn.jsdelivr.net/npm/docsify-toc@1/dist/toc.min.js"></script>
-
-  <!-- Mermaid：ESM 版本（官方要求）+ 官方插件 -->
-  <script type="module">
-    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
-    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
-    window.mermaid = mermaid;
-  </script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-mermaid@2/dist/docsify-mermaid.js"></script>
+  <!-- Mermaid：UMD 完整版（挂载 window.mermaid） -->
+  <script src="//cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
   <script>
     // 阅读进度条
