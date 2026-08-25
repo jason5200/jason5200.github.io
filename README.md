@@ -10,6 +10,7 @@
 
 | 日期 | 文章 | 系列 |
 |------|------|------|
+| 更新中 | [一次 Binder 通信的完整流程](articles/framework/binder-full-flow.md) | 📚 Android Framework |
 | 更新中 | [Binder 机制总览：为什么 Android 用它做 IPC](articles/framework/binder-overview.md) | 📚 Android Framework |
 | 更新中 | [车机多屏显示：从 Display 到 Surface 的链路](articles/multi-display/multi-display.md) | 📖 车载 Android |
 | 更新中 | [CarPropertyManager：如何读写车辆属性](articles/carservice-api/carproperty-manager.md) | 📖 车载 Android |

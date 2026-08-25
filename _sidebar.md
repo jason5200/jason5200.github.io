@@ -10,7 +10,8 @@
 
 - 📚 Android Framework
   - [Binder 机制总览：为什么 Android 用它做 IPC](articles/framework/binder-overview.md)
-  - [一次 Binder 通信的完整流程（规划中）]()
+  - [一次 Binder 通信的完整流程](articles/framework/binder-full-flow.md)
+  - [Handler 消息机制（规划中）]()
 
 - 🚗 车载实战
   - [车机 Launcher 骨架（规划中）]()
