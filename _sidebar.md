@@ -71,6 +71,12 @@
 
 - 🤖 AI 上车
   - [系列导读](series/ai.md)
+  - [Transformer 原理：注意力机制](articles/ai/transformer.md)
+  - [大模型训练：从预训练到微调](articles/ai/pretrain-finetune.md)
+  - [模型量化：INT8/INT4 原理与实战](articles/ai/quantization.md)
+  - [模型蒸馏与剪枝](articles/ai/distill-prune.md)
+  - [端侧推理框架对比：MNN/NCNN/llama.cpp](articles/ai/inference-framework.md)
+  - [MediaPipe LLM Inference 实战](articles/ai/mediapipe.md)
   - [大模型上车：端侧推理的可行方案](articles/ai/on-device-llm.md)
   - [车载语音助手：从 ASR 到 LLM](articles/ai/voice-assistant.md)
   - [Agent 在车机场景的应用](articles/ai/agent-cockpit.md)

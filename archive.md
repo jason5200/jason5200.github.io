@@ -74,6 +74,12 @@
 
 | 日期 | 文章 |
 |------|------|
+| 2026-08-27 | [MediaPipe LLM Inference 实战](articles/ai/mediapipe.md) |
+| 2026-08-27 | [端侧推理框架对比：MNN/NCNN/llama.cpp](articles/ai/inference-framework.md) |
+| 2026-08-27 | [模型蒸馏与剪枝](articles/ai/distill-prune.md) |
+| 2026-08-27 | [模型量化：INT8/INT4 原理与实战](articles/ai/quantization.md) |
+| 2026-08-27 | [大模型训练：从预训练到微调](articles/ai/pretrain-finetune.md) |
+| 2026-08-27 | [Transformer 原理：注意力机制](articles/ai/transformer.md) |
 | 2026-08-26 | [Agent 框架：Function Calling 实战](articles/agent/agent-framework.md) |
 | 2026-08-26 | [车载多模态：语音 + 视觉融合](articles/multimodal/multimodal.md) |
 | 2026-08-26 | [车载 RAG 实战：本地知识库问答](articles/rag/car-rag.md) |
@@ -84,4 +90,4 @@
 
 ---
 
-> 共 **63 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **69 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
