@@ -74,6 +74,11 @@
 
 | 日期 | 文章 |
 |------|------|
+| 2026-08-27 | [大模型安全：对齐与防护](articles/ai/llm-safety.md) |
+| 2026-08-27 | [提示词工程：Prompt 设计](articles/ai/prompt.md) |
+| 2026-08-27 | [语音合成 TTS 端侧化](articles/ai/tts.md) |
+| 2026-08-27 | [端侧多模态模型部署](articles/ai/multimodal-deploy.md) |
+| 2026-08-27 | [LoRA 微调实战](articles/ai/lora.md) |
 | 2026-08-27 | [Agent 的可观测性](articles/ai/agent-observability.md) |
 | 2026-08-27 | [车载 Agent 的安全框架](articles/ai/agent-security.md) |
 | 2026-08-27 | [LangChain/LlamaIndex 在 Android 的应用](articles/ai/langchain.md) |
@@ -102,4 +107,4 @@
 
 ---
 
-> 共 **81 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **86 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
