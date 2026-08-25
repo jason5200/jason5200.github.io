@@ -74,6 +74,12 @@
 
 | 日期 | 文章 |
 |------|------|
+| 2026-08-27 | [Agent 的可观测性](articles/ai/agent-observability.md) |
+| 2026-08-27 | [车载 Agent 的安全框架](articles/ai/agent-security.md) |
+| 2026-08-27 | [LangChain/LlamaIndex 在 Android 的应用](articles/ai/langchain.md) |
+| 2026-08-27 | [Agent 的记忆系统](articles/ai/agent-memory.md) |
+| 2026-08-27 | [多 Agent 协作](articles/ai/multi-agent.md) |
+| 2026-08-27 | [Agent 的规划：ReAct 与思维链](articles/ai/react.md) |
 | 2026-08-27 | [RAG 的分块策略](articles/ai/rag-chunking.md) |
 | 2026-08-27 | [RAG 的评估与优化](articles/ai/rag-eval.md) |
 | 2026-08-27 | [RAG 进阶：混合检索与重排序](articles/ai/rag-hybrid.md) |
@@ -96,4 +102,4 @@
 
 ---
 
-> 共 **75 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **81 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
