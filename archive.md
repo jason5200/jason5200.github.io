@@ -74,6 +74,12 @@
 
 | 日期 | 文章 |
 |------|------|
+| 2026-08-27 | [RAG 的分块策略](articles/ai/rag-chunking.md) |
+| 2026-08-27 | [RAG 的评估与优化](articles/ai/rag-eval.md) |
+| 2026-08-27 | [RAG 进阶：混合检索与重排序](articles/ai/rag-hybrid.md) |
+| 2026-08-27 | [向量数据库选型：Milvus/FAISS](articles/ai/vectordb.md) |
+| 2026-08-27 | [Embedding 与向量化](articles/ai/embedding.md) |
+| 2026-08-27 | [ONNX Runtime Mobile 实战](articles/ai/onnx.md) |
 | 2026-08-27 | [MediaPipe LLM Inference 实战](articles/ai/mediapipe.md) |
 | 2026-08-27 | [端侧推理框架对比：MNN/NCNN/llama.cpp](articles/ai/inference-framework.md) |
 | 2026-08-27 | [模型蒸馏与剪枝](articles/ai/distill-prune.md) |
@@ -90,4 +96,4 @@
 
 ---
 
-> 共 **69 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **75 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
