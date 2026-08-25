@@ -10,13 +10,13 @@
 
 | 日期 | 文章 | 系列 |
 |------|------|------|
+| 2026-08-26 | [CarService 权限模型：权限与驾驶分心](articles/permission/car-permission.md) | 📖 车载 |
+| 2026-08-26 | [车载 OTA 升级：差分包与 A/B 分区](articles/ota/ota-upgrade.md) | 📖 车载 |
+| 2026-08-26 | [CarAudioService：车载音频管理](articles/audio/car-audio-service.md) | 📖 车载 |
 | 2026-08-26 | [类加载机制：ClassLoader 与双亲委派](articles/framework/classloader.md) | 📚 Framework |
 | 2026-08-26 | [消息队列与 IdleHandler](articles/framework/idlehandler.md) | 📚 Framework |
 | 2026-08-26 | [View 绘制流程：measure / layout / draw](articles/framework/draw-process.md) | 📚 Framework |
 | 2026-08-26 | [View 事件分发机制](articles/framework/touch-event.md) | 📚 Framework |
-| 2026-08-24 | [Choreographer 与渲染机制](articles/framework/choreographer.md) | 📚 Framework |
-| 2026-08-23 | [Binder 驱动层深入](articles/framework/binder-driver.md) | 📚 Framework |
-| 2026-08-23 | [端侧 AI 的工程化实践](articles/ai/ai-engineering.md) | 🤖 AI 上车 |
 
 → [查看全部文章](archive.md)
 

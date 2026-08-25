@@ -8,6 +8,9 @@
 
 | 日期 | 文章 |
 |------|------|
+| 2026-08-26 | [CarService 权限模型：权限与驾驶分心](articles/permission/car-permission.md) |
+| 2026-08-26 | [车载 OTA 升级：差分包与 A/B 分区](articles/ota/ota-upgrade.md) |
+| 2026-08-26 | [CarAudioService：车载音频管理](articles/audio/car-audio-service.md) |
 | 2026-08-23 | [端侧 AI 的工程化实践](articles/ai/ai-engineering.md) |
 | 2026-08-22 | [Agent 在车机场景的应用](articles/ai/agent-cockpit.md) |
 | 2026-08-21 | [车载语音助手：从 ASR 到 LLM](articles/ai/voice-assistant.md) |
@@ -37,4 +40,4 @@
 
 ---
 
-> 共 **21 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **24 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。

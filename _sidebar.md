@@ -11,6 +11,9 @@
   - [CarPropertyManager：读写车辆属性](articles/carservice-api/carproperty-manager.md)
   - [车机多屏显示：Display 到 Surface](articles/multi-display/multi-display.md)
   - [车机冷启动优化实战](articles/perf/cold-start.md)
+  - [CarAudioService：车载音频管理](articles/audio/car-audio-service.md)
+  - [车载 OTA 升级：差分包与 A/B 分区](articles/ota/ota-upgrade.md)
+  - [CarService 权限模型：权限与驾驶分心](articles/permission/car-permission.md)
 
 - 📚 Android Framework
   - [系列导读](series/framework.md)
