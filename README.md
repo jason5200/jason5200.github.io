@@ -10,6 +10,8 @@
 
 | 日期 | 文章 | 系列 |
 |------|------|------|
+| 更新中 | [Binder 驱动层深入](articles/framework/binder-driver.md) | 📚 Android Framework |
+| 更新中 | [端侧 AI 的工程化实践](articles/ai/ai-engineering.md) | 🤖 AI 上车 |
 | 更新中 | [Choreographer 与渲染机制](articles/framework/choreographer.md) | 📚 Android Framework |
 | 更新中 | [WMS 窗口管理解析](articles/framework/wms-window.md) | 📚 Android Framework |
 | 更新中 | [Agent 在车机场景的应用](articles/ai/agent-cockpit.md) | 🤖 AI 上车 |

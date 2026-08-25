@@ -13,6 +13,7 @@
 - 📚 Android Framework
   - [Binder 机制总览：为什么 Android 用它做 IPC](articles/framework/binder-overview.md)
   - [一次 Binder 通信的完整流程](articles/framework/binder-full-flow.md)
+  - [Binder 驱动层深入](articles/framework/binder-driver.md)
   - [Handler 消息机制：从 Looper 到 MessageQueue](articles/framework/handler-message-mechanism.md)
   - [同步屏障与异步消息](articles/framework/sync-barrier.md)
   - [AMS 启动流程解析](articles/framework/ams-startup.md)
@@ -26,6 +27,7 @@
   - [大模型上车：端侧推理的可行方案](articles/ai/on-device-llm.md)
   - [车载语音助手：从 ASR 到 LLM](articles/ai/voice-assistant.md)
   - [Agent 在车机场景的应用](articles/ai/agent-cockpit.md)
+  - [端侧 AI 的工程化实践](articles/ai/ai-engineering.md)
 
 - 关于
   - [GitHub 主页](https://github.com/jason5200)
