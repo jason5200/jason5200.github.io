@@ -2,6 +2,7 @@
 
 > 系列：AAOS-Guide · 04-perf
 > 难度：⭐⭐⭐ 实战
+> 更新：2026-08-19
 > 前置知识：Android 启动流程、Handler 机制
 
 ---

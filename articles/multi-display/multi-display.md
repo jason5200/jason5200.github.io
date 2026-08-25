@@ -2,6 +2,7 @@
 
 > 系列：AAOS-Guide · 03-multi-display
 > 难度：⭐⭐⭐ 进阶
+> 更新：2026-08-18
 > 前置知识：《CarService 架构》、Android Surface/Window 基础
 
 ---

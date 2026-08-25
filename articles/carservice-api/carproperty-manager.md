@@ -2,6 +2,7 @@
 
 > 系列：AAOS-Guide · 02-carservice-api
 > 难度：⭐⭐⭐ 实战
+> 更新：2026-08-17
 > 前置知识：《CarService 架构》
 
 ---

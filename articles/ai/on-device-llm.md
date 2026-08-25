@@ -2,6 +2,7 @@
 
 > 系列：AAOS-Guide · 05-ai-integration
 > 难度：⭐⭐⭐ 进阶
+> 更新：2026-08-20
 > 前置知识：Android 基础、对大模型（LLM）的基本认知
 
 ---

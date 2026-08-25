@@ -2,6 +2,7 @@
 
 > 系列：AAOS-Guide · 01-car-service
 > 难度：⭐⭐ 进阶
+> 更新：2026-08-16
 > 前置知识：《车载 Android 全景：AAOS 到底是什么》、Android 系统启动流程
 
 ---
@@ -56,21 +57,28 @@ SystemServer（系统服务总进程）
 
 CarService 内部不是一坨代码，而是严格分层的：
 
-```
-┌────────────────────────────────────────────────────┐
-│   Car API（android.car.*，App 直接调用）              │
-├────────────────────────────────────────────────────┤
-│   CarService（ICarImpl 实现层）                      │
-│      ├── CarPropertyService                        │
-│      ├── CarPowerManagementService                 │
-│      ├── CarHvacService                            │
-│      └── ...                                       │
-├────────────────────────────────────────────────────┤
-│   Vehicle HAL（AIDL 定义，硬件抽象）                 │
-│      └── IVehicle / IVehicleCallback               │
-├────────────────────────────────────────────────────┤
-│   Vehicle HAL 实现（对接 CAN 总线 / ECU / 传感器）    │
-└────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph App层["App 层"]
+        A["车载应用（Launcher/地图/语音）"]
+    end
+    subgraph API层["Car API 层"]
+        B["android.car.*（CarPropertyManager 等）"]
+    end
+    subgraph Service层["CarService 层"]
+        C1["CarPropertyService"]
+        C2["CarPowerManagementService"]
+        C3["CarHvacService"]
+        C4["..."]
+    end
+    subgraph HAL层["Vehicle HAL 层"]
+        D["IVehicle / IVehicleCallback（AIDL）"]
+    end
+    subgraph 硬件层["硬件层"]
+        E["CAN 总线 / ECU / 传感器"]
+    end
+    A --> B --> Service层
+    Service层 --> D --> E
 ```
 
 - **Car API**：App 侧，通过 `Car` 入口类拿到各种 Manager（如 `CarPropertyManager`）。

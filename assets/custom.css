@@ -116,3 +116,70 @@ body {
   color: #64748b;
   font-size: 12px;
 }
+
+/* 阅读进度条 */
+#reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0;
+  background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+  z-index: 1000;
+  transition: width 0.1s linear;
+}
+
+/* 页脚 */
+.markdown-section footer {
+  margin-top: 32px;
+}
+.markdown-section footer a {
+  color: #38bdf8;
+}
+
+/* TOC 目录 */
+.docsify-toc {
+  font-size: 13px;
+}
+.docsify-toc a {
+  color: #cbd5e1;
+}
+.docsify-toc a.active {
+  color: #38bdf8;
+}
+
+/* Mermaid 流程图 */
+.mermaid {
+  background: #0b1120;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+  text-align: center;
+  overflow-x: auto;
+}
+.mermaid svg {
+  max-width: 100%;
+}
+
+/* 文章元信息块（日期等） */
+.article-meta {
+  color: #64748b;
+  font-size: 13px;
+  margin-bottom: 24px;
+}
+
+/* 代码块微调：适配 prism-tomorrow 深色主题 */
+.markdown-section pre {
+  position: relative;
+}
+.markdown-section pre code {
+  font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* 行内代码 */
+.markdown-section code {
+  font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+}

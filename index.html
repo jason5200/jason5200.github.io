@@ -12,10 +12,16 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://jason5200.github.io">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <!-- 代码高亮：深色主题，匹配博客风格 -->
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.css">
   <link rel="stylesheet" href="assets/custom.css">
 </head>
 <body>
+  <!-- 阅读进度条 -->
+  <div id="reading-progress"></div>
+
   <div id="app">加载中...</div>
+
   <script>
     window.$docsify = {
       name: 'Jason 的码上座舱 🚗',
@@ -40,13 +46,64 @@
         nextText: '下一篇',
         crossChapter: true,
         crossChapterText: false
-      }
+      },
+      // 页面底部页脚
+      plugins: [
+        function (hook) {
+          var footer = [
+            '<hr/>',
+            '<footer style="text-align:center;color:#64748b;font-size:13px;padding:16px 0;">',
+            '© 2026 <a href="https://github.com/jason5200" target="_blank">jason5200</a> · ',
+            'Powered by <a href="https://docsify.js.org" target="_blank">Docsify</a> · ',
+            '<a href="https://github.com/jason5200/jason5200.github.io" target="_blank">博客源码</a>',
+            '</footer>'
+          ].join('');
+          hook.afterEach(function (html) {
+            return html + footer;
+          });
+        }
+      ]
     };
   </script>
+
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/copy-code.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
+  <!-- TOC 目录插件 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify-toc@1/dist/toc.min.js"></script>
+  <!-- Mermaid 流程图插件 -->
+  <script src="//cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+  <script>
+    // 阅读进度条
+    document.addEventListener('scroll', function () {
+      var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+      var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      var bar = document.getElementById('reading-progress');
+      if (bar) bar.style.width = progress + '%';
+    });
+
+    // Mermaid 渲染
+    window.addEventListener('load', function () {
+      if (window.mermaid) {
+        mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+        // 延迟渲染，等待 docsify 加载完成
+        setTimeout(function () {
+          document.querySelectorAll('pre code.language-mermaid').forEach(function (el) {
+            var parent = el.parentElement;
+            var graph = el.textContent;
+            var container = document.createElement('div');
+            container.className = 'mermaid';
+            container.textContent = graph;
+            parent.replaceWith(container);
+          });
+          mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
+        }, 500);
+      }
+    });
+  </script>
 </body>
 </html>
