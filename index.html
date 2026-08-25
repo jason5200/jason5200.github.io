@@ -11,7 +11,7 @@
   <meta property="og:description" content="车载 Android · Android Framework · AI 应用落地的技术博客">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://jason5200.github.io">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/dark.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/buble.css">
   <link rel="stylesheet" href="assets/custom.css">
 </head>
 <body>
@@ -50,7 +50,7 @@
         function (hook) {
           var footer = [
             '<hr/>',
-            '<footer style="text-align:center;color:#64748b;font-size:13px;padding:16px 0;">',
+            '<footer style="text-align:center;color:#6a737d;font-size:13px;padding:16px 0;">',
             '© 2026 <a href="https://github.com/jason5200" target="_blank">jason5200</a> · ',
             'Powered by <a href="https://docsify.js.org" target="_blank">Docsify</a> · ',
             '<a href="https://github.com/jason5200/jason5200.github.io" target="_blank">博客源码</a>',
@@ -87,7 +87,7 @@
     // Mermaid 渲染
     window.addEventListener('load', function () {
       if (window.mermaid) {
-        mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+        mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
         // 延迟渲染，等待 docsify 加载完成
         setTimeout(function () {
           document.querySelectorAll('pre code.language-mermaid').forEach(function (el) {

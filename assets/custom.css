@@ -1,7 +1,7 @@
-/* 博客样式增强 —— 基于 Docsify 官方 dark 主题，仅做细节定制 */
+/* 博客样式增强 —— 浅色清爽风，基于 Docsify buble 主题 */
 
 :root {
-  --theme-color: #42b983;   /* Docsify 默认绿，与 dark 主题和谐 */
+  --theme-color: #0074d9;   /* buble 默认蓝，清爽 */
 }
 
 /* 阅读进度条 */
@@ -11,44 +11,121 @@
   left: 0;
   height: 3px;
   width: 0;
-  background: linear-gradient(90deg, #42b983, #38bdf8);
+  background: linear-gradient(90deg, #0074d9, #38bdf8);
   z-index: 1000;
   transition: width 0.1s linear;
 }
 
-/* 封面按钮：更精致的圆角 */
+/* 内容区：更舒适的阅读宽度和字号 */
+.markdown-section {
+  max-width: 800px;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+/* 标题 */
+.markdown-section h1 {
+  font-size: 2em;
+  margin-bottom: 0.6em;
+}
+.markdown-section h2 {
+  font-size: 1.5em;
+  margin-top: 2em;
+  padding-bottom: 0.4em;
+  border-bottom: 1px solid #eaecef;
+}
+.markdown-section h3 {
+  font-size: 1.2em;
+  margin-top: 1.6em;
+}
+
+/* 段落间距 */
+.markdown-section p {
+  margin: 1em 0;
+}
+
+/* 代码块 */
+.markdown-section pre {
+  border-radius: 8px;
+  padding: 16px;
+  background: #f6f8fa;
+  border: 1px solid #eaecef;
+}
+.markdown-section pre code {
+  font-family: "JetBrains Mono", "Fira Code", "SFMono-Regular", Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.markdown-section code {
+  font-family: "JetBrains Mono", "Fira Code", "SFMono-Regular", Consolas, monospace;
+  background: #f0f2f5;
+  color: #e03e8e;
+  border-radius: 3px;
+  padding: 2px 5px;
+  font-size: 0.9em;
+}
+.markdown-section pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* 表格：清爽的横向表格 */
+.markdown-section table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2em 0;
+}
+.markdown-section th {
+  background: #f6f8fa;
+  font-weight: 600;
+}
+.markdown-section th,
+.markdown-section td {
+  border: 1px solid #eaecef;
+  padding: 10px 14px;
+}
+.markdown-section tr:nth-child(even) {
+  background: #fafbfc;
+}
+
+/* 引用块 */
+.markdown-section blockquote {
+  border-left: 4px solid #0074d9;
+  background: #f6f8fa;
+  color: #57606a;
+  padding: 12px 16px;
+  border-radius: 0 6px 6px 0;
+}
+
+/* 封面按钮 */
 .cover-main .btn {
   border-radius: 6px;
 }
 
 /* 页脚 */
 .markdown-section footer {
-  margin-top: 40px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 48px;
+  border-top: 1px solid #eaecef;
   padding-top: 16px;
 }
 
-/* Mermaid 流程图：与 dark 主题协调的边框 */
+/* Mermaid 流程图 */
 .mermaid {
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid #eaecef;
   border-radius: 8px;
   padding: 16px;
   margin: 16px 0;
   text-align: center;
   overflow-x: auto;
-  background: rgba(255, 255, 255, 0.02);
+  background: #fafbfc;
 }
 .mermaid svg {
   max-width: 100%;
 }
 
-/* 代码字体 */
-.markdown-section pre code,
-.markdown-section code {
-  font-family: "JetBrains Mono", "Fira Code", "SFMono-Regular", Consolas, monospace;
-}
-
-/* 上一篇/下一篇分页：更柔和 */
+/* 上一篇/下一篇分页 */
 .pagination-item {
   border-radius: 6px;
 }
