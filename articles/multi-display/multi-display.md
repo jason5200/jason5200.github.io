@@ -43,23 +43,13 @@
 
 一次画面显示，数据要经过这条链路：
 
-```
-App 绘制（View 树）
-   │
-   ▼
-Window（每个 Activity 一个）
-   │
-   ▼
-Surface（缓冲区，App 往这里画）
-   │
-   ▼
-SurfaceFlinger（系统合成器）
-   │
-   ▼
-Hardware Composer（HWC，硬件合成）
-   │
-   ▼
-物理屏幕（Display）
+```mermaid
+flowchart TB
+    A["App 绘制（View 树）"] --> B["Window（每个 Activity 一个）"]
+    B --> C["Surface（缓冲区）"]
+    C --> D["SurfaceFlinger（系统合成器）"]
+    D --> E["Hardware Composer（HWC）"]
+    E --> F["物理屏幕（Display）"]
 ```
 
 **关键理解**：

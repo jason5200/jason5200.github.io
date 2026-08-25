@@ -114,20 +114,16 @@ carPropertyManager.registerCallback(listener, VehiclePropertyIds.VEHICLE_SPEED, 
 
 结合上一篇《CarService 架构》，一次读车速的完整链路：
 
-```
-App: CarPropertyManager.getProperty(VEHICLE_SPEED)
-        │  (Binder 跨进程)
-        ▼
-CarPropertyService.getProperty()
-        │  (AIDL)
-        ▼
-Vehicle HAL: IVehicle.get(VehiclePropConfig)
-        │
-        ▼
-HAL 实现读 CAN 总线 → 返回车速
-        │  (原路返回)
-        ▼
-App 拿到结果 / 回调触发
+```mermaid
+sequenceDiagram
+    participant App as App
+    participant Svc as CarPropertyService
+    participant HAL as Vehicle HAL
+    App->>Svc: getProperty(VEHICLE_SPEED)（Binder）
+    Svc->>HAL: IVehicle.get(VehiclePropConfig)（AIDL）
+    HAL->>HAL: 读 CAN 总线
+    HAL-->>Svc: 返回车速
+    Svc-->>App: 结果 / 回调触发
 ```
 
 ## 七、常见坑与最佳实践

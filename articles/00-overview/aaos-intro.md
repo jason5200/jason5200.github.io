@@ -28,22 +28,27 @@
 
 AAOS 在 AOSP 基础上，**新增了汽车专属的一整套服务栈**，这才是它的核心价值。
 
-```
-┌─────────────────────────────────────────────┐
-│            车载应用（Launcher / 地图 / 语音）    │
-├─────────────────────────────────────────────┤
-│        Car API（android.car / CarProperty）  │
-├─────────────────────────────────────────────┤
-│        CarService（汽车专属系统服务层）          │
-│        ├── CarPropertyService  ├── CarPower  │
-│        ├── CarHvacService     ├── CarSensor │
-│        └── CarInfoService      ...           │
-├─────────────────────────────────────────────┤
-│        Vehicle HAL（车辆硬件抽象层）            │
-│        （对接 CAN 总线、车控 ECU、传感器）        │
-├─────────────────────────────────────────────┤
-│            Linux Kernel + 车载硬件             │
-└─────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph App["应用层"]
+        A["车载应用（Launcher / 地图 / 语音）"]
+    end
+    subgraph API["Car API 层"]
+        B["android.car / CarProperty"]
+    end
+    subgraph Svc["CarService 服务层"]
+        C1["CarPropertyService"]
+        C2["CarHvacService"]
+        C3["CarSensorService"]
+        C4["CarInfoService"]
+    end
+    subgraph HAL["Vehicle HAL 层"]
+        D["车辆硬件抽象（CAN 总线 / ECU / 传感器）"]
+    end
+    subgraph Kernel["内核层"]
+        E["Linux Kernel + 车载硬件"]
+    end
+    A --> B --> Svc --> D --> E
 ```
 
 **关键理解**：AAOS 多出来的这一层 `CarService`，作用就是把「车辆硬件能力」抽象成「Android 服务」，让 App 能像调用普通系统服务一样，调用车辆功能（空调、车速、续航、门窗等）。
