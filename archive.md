@@ -51,6 +51,9 @@
 | 2026-08-27 | [Service 的启动与绑定机制](articles/framework/service-bind.md) |
 | 2026-08-27 | [Activity 生命周期与异常恢复](articles/framework/lifecycle-restore.md) |
 | 2026-08-27 | [Activity 启动模式与任务栈](articles/framework/launch-mode.md) |
+| 2026-08-27 | [模型量化误差的完整分析](articles/ai/quantization-error.md) |
+| 2026-08-27 | [ContentProvider 跨进程的完整源码](articles/framework/contentprovider-source.md) |
+| 2026-08-27 | [View 事件分发的完整源码](articles/framework/touch-source.md) |
 | 2026-08-27 | [llama.cpp 的 RoPE 位置编码实现](articles/ai/llamacpp-rope.md) |
 | 2026-08-27 | [Binder 线程池的完整源码](articles/framework/binder-threadpool-source.md) |
 | 2026-08-27 | [View layout 与 draw 的源码全链路](articles/framework/layout-draw-source.md) |
@@ -124,4 +127,4 @@
 
 ---
 
-> 共 **103 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **106 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
