@@ -8,6 +8,12 @@
 
 | 日期 | 文章 |
 |------|------|
+| 2026-08-27 | [Vehicle HAL 深入：从 AIDL 到实现](articles/permission/vehicle-hal.md) |
+| 2026-08-27 | [CarUxRestrictionsService：驾驶分心深入](articles/audio/car-ux.md) |
+| 2026-08-27 | [CarInfoService：车辆静态信息](articles/audio/car-info.md) |
+| 2026-08-27 | [CarSensorService：车辆传感器数据](articles/audio/car-sensor.md) |
+| 2026-08-27 | [CarHvacService：空调控制深入](articles/audio/car-hvac.md) |
+| 2026-08-27 | [CarPowerManagementService：电源状态管理](articles/audio/car-power.md) |
 | 2026-08-26 | [CarService 权限模型：权限与驾驶分心](articles/permission/car-permission.md) |
 | 2026-08-26 | [车载 OTA 升级：差分包与 A/B 分区](articles/ota/ota-upgrade.md) |
 | 2026-08-26 | [CarAudioService：车载音频管理](articles/audio/car-audio-service.md) |
@@ -66,4 +72,4 @@
 
 ---
 
-> 共 **45 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **51 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
