@@ -51,6 +51,9 @@
 | 2026-08-27 | [Service 的启动与绑定机制](articles/framework/service-bind.md) |
 | 2026-08-27 | [Activity 生命周期与异常恢复](articles/framework/lifecycle-restore.md) |
 | 2026-08-27 | [Activity 启动模式与任务栈](articles/framework/launch-mode.md) |
+| 2026-08-27 | [注意力机制的数学推导](articles/ai/attention-math.md) |
+| 2026-08-27 | [CarService 启动流程的完整源码](articles/car-service/carservice-startup-source.md) |
+| 2026-08-27 | [RecyclerView 缓存复用的完整源码](articles/framework/recyclerview-source.md) |
 | 2026-08-27 | [Handler native 层唤醒机制](articles/framework/handler-native-wakeup.md) |
 | 2026-08-27 | [Binder mmap 一次拷贝的完整源码](articles/framework/binder-mmap-deep.md) |
 | 2026-08-27 | [主线程卡顿检测与 BlockCanary 原理](articles/framework/blockcanary.md) |
@@ -109,4 +112,4 @@
 
 ---
 
-> 共 **88 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **91 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。

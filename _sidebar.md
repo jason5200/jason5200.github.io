@@ -8,6 +8,7 @@
   - [系列导读](series/aaos.md)
   - [全景：AAOS 到底是什么](articles/00-overview/aaos-intro.md)
   - [CarService 架构：从 SystemServer 到车辆服务](articles/car-service/carservice-architecture.md)
+  - [CarService 启动流程的完整源码](articles/car-service/carservice-startup-source.md)
   - [CarPropertyManager：读写车辆属性](articles/carservice-api/carproperty-manager.md)
   - [CarPowerManagementService：电源状态管理](articles/audio/car-power.md)
   - [CarHvacService：空调控制深入](articles/audio/car-hvac.md)
@@ -63,6 +64,7 @@
   - [View 的 invalidate 与 requestLayout](articles/framework/invalidate-requestlayout.md)
   - [滑动冲突的完整解决方案](articles/framework/scroll-conflict.md)
   - [RecyclerView 缓存与复用机制](articles/framework/recyclerview.md)
+  - [RecyclerView 缓存复用的完整源码](articles/framework/recyclerview-source.md)
   - [类加载机制：ClassLoader 与双亲委派](articles/framework/classloader.md)
   - [内存泄漏与 LeakCanary 原理](articles/framework/memory-leak.md)
   - [ANR 原理与排查方法](articles/framework/anr.md)
@@ -74,6 +76,7 @@
 - 🤖 AI 上车
   - [系列导读](series/ai.md)
   - [Transformer 原理：注意力机制](articles/ai/transformer.md)
+  - [注意力机制的数学推导](articles/ai/attention-math.md)
   - [大模型训练：从预训练到微调](articles/ai/pretrain-finetune.md)
   - [模型量化：INT8/INT4 原理与实战](articles/ai/quantization.md)
   - [模型蒸馏与剪枝](articles/ai/distill-prune.md)
