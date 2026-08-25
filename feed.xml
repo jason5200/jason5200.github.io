@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Jason 的码上座舱</title>
+    <link>https://jason5200.github.io</link>
+    <description>车载 Android（AAOS）· Android Framework 源码精读 · AI 应用落地的技术博客</description>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 25 Aug 2026 00:00:00 GMT</lastBuildDate>
+    <atom:link href="https://jason5200.github.io/feed.xml" rel="self" type="application/rss+xml" />
+
+    <item>
+      <title>Choreographer 与渲染机制</title>
+      <link>https://jason5200.github.io/#/articles/framework/choreographer.md</link>
+      <guid>https://jason5200.github.io/#/articles/framework/choreographer.md</guid>
+      <pubDate>Sun, 24 Aug 2026 00:00:00 GMT</pubDate>
+      <description>Choreographer 是 Android 渲染机制的核心调度器，负责协调 UI 绘制与屏幕刷新同步。</description>
+    </item>
+    <item>
+      <title>端侧 AI 的工程化实践</title>
+      <link>https://jason5200.github.io/#/articles/ai/ai-engineering.md</link>
+      <guid>https://jason5200.github.io/#/articles/ai/ai-engineering.md</guid>
+      <pubDate>Sat, 23 Aug 2026 00:00:00 GMT</pubDate>
+      <description>从 Demo 到工程化：模型管理、性能、内存功耗、监控、安全。</description>
+    </item>
+    <item>
+      <title>Binder 驱动层深入</title>
+      <link>https://jason5200.github.io/#/articles/framework/binder-driver.md</link>
+      <guid>https://jason5200.github.io/#/articles/framework/binder-driver.md</guid>
+      <pubDate>Sat, 23 Aug 2026 00:00:00 GMT</pubDate>
+      <description>深入 Binder 内核驱动：mmap 一次拷贝、ioctl 命令协议、安全机制。</description>
+    </item>
+    <item>
+      <title>Agent 在车机场景的应用</title>
+      <link>https://jason5200.github.io/#/articles/ai/agent-cockpit.md</link>
+      <guid>https://jason5200.github.io/#/articles/ai/agent-cockpit.md</guid>
+      <pubDate>Sat, 22 Aug 2026 00:00:00 GMT</pubDate>
+      <description>Agent = LLM + 工具 + 记忆 + 规划，车机场景的行程规划、车辆健康、个性化座舱。</description>
+    </item>
+    <item>
+      <title>WMS 窗口管理解析</title>
+      <link>https://jason5200.github.io/#/articles/framework/wms-window.md</link>
+      <guid>https://jason5200.github.io/#/articles/framework/wms-window.md</guid>
+      <pubDate>Sat, 22 Aug 2026 00:00:00 GMT</pubDate>
+      <description>WMS 负责窗口层级、显示区域、输入事件分发。</description>
+    </item>
+    <item>
+      <title>车载语音助手：从 ASR 到 LLM</title>
+      <link>https://jason5200.github.io/#/articles/ai/voice-assistant.md</link>
+      <guid>https://jason5200.github.io/#/articles/ai/voice-assistant.md</guid>
+      <pubDate>Fri, 21 Aug 2026 00:00:00 GMT</pubDate>
+      <description>车载语音五段链路：ASR → NLU → 业务 → NLG → TTS。</description>
+    </item>
+    <item>
+      <title>AMS 启动流程解析</title>
+      <link>https://jason5200.github.io/#/articles/framework/ams-startup.md</link>
+      <guid>https://jason5200.github.io/#/articles/framework/ams-startup.md</guid>
+      <pubDate>Fri, 21 Aug 2026 00:00:00 GMT</pubDate>
+      <description>AMS 定位、启动链路、与 Zygote 的 socket 通信、ApplicationThread。</description>
+    </item>
+    <item>
+      <title>同步屏障与异步消息</title>
+      <link>https://jason5200.github.io/#/articles/framework/sync-barrier.md</link>
+      <guid>https://jason5200.github.io/#/articles/framework/sync-barrier.md</guid>
+      <pubDate>Thu, 20 Aug 2026 00:00:00 GMT</pubDate>
+      <description>同步屏障挡住同步消息，只放行异步消息，UI 渲染的优先级保障。</description>
+    </item>
+    <item>
+      <title>大模型上车：端侧推理的可行方案</title>
+      <link>https://jason5200.github.io/#/articles/ai/on-device-llm.md</link>
+      <guid>https://jason5200.github.io/#/articles/ai/on-device-llm.md</guid>
+      <pubDate>Thu, 20 Aug 2026 00:00:00 GMT</pubDate>
+      <description>端侧推理三条路线：量化轻量、端云协同、端侧 RAG。</description>
+    </item>
+    <item>
+      <title>车机冷启动优化实战</title>
+      <link>https://jason5200.github.io/#/articles/perf/cold-start.md</link>
+      <guid>https://jason5200.github.io/#/articles/perf/cold-start.md</guid>
+      <pubDate>Wed, 19 Aug 2026 00:00:00 GMT</pubDate>
+      <description>车机冷启动三阶段、ADB 测量、延迟初始化、布局精简。</description>
+    </item>
+    <item>
+      <title>车机多屏显示：从 Display 到 Surface 的链路</title>
+      <link>https://jason5200.github.io/#/articles/multi-display/multi-display.md</link>
+      <guid>https://jason5200.github.io/#/articles/multi-display/multi-display.md</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <description>Display vs Surface、显示链路、多屏 API、驾驶分心限制。</description>
+    </item>
+    <item>
+      <title>Handler 消息机制：从 Looper 到 MessageQueue</title>
+      <link>https://jason5200.github.io/#/articles/framework/handler-message-mechanism.md</link>
+      <guid>https://jason5200.github.io/#/articles/framework/handler-message-mechanism.md</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <description>Handler 四角色、消息循环、切线程本质、Message 复用。</description>
+    </item>
+    <item>
+      <title>CarPropertyManager：如何读写车辆属性</title>
+      <link>https://jason5200.github.io/#/articles/carservice-api/carproperty-manager.md</link>
+      <guid>https://jason5200.github.io/#/articles/carservice-api/carproperty-manager.md</guid>
+      <pubDate>Mon, 17 Aug 2026 00:00:00 GMT</pubDate>
+      <description>车辆属性的读、写、监听三种操作与完整链路。</description>
+    </item>
+    <item>
+      <title>一次 Binder 通信的完整流程</title>
+      <link>https://jason5200.github.io/#/articles/framework/binder-full-flow.md</link>
+      <guid>https://jason5200.github.io/#/articles/framework/binder-full-flow.md</guid>
+      <pubDate>Mon, 17 Aug 2026 00:00:00 GMT</pubDate>
+      <description>Proxy 打包 → 驱动搬运 → Stub 拆包执行 → 结果原路返回。</description>
+    </item>
+    <item>
+      <title>CarService 架构：从 SystemServer 到车辆服务</title>
+      <link>https://jason5200.github.io/#/articles/car-service/carservice-architecture.md</link>
+      <guid>https://jason5200.github.io/#/articles/car-service/carservice-architecture.md</guid>
+      <pubDate>Sun, 16 Aug 2026 00:00:00 GMT</pubDate>
+      <description>CarService 独立进程、分层结构、核心子服务、完整调用链路。</description>
+    </item>
+    <item>
+      <title>Binder 机制总览：为什么 Android 用它做 IPC</title>
+      <link>https://jason5200.github.io/#/articles/framework/binder-overview.md</link>
+      <guid>https://jason5200.github.io/#/articles/framework/binder-overview.md</guid>
+      <pubDate>Sun, 16 Aug 2026 00:00:00 GMT</pubDate>
+      <description>Binder 四层架构、核心角色、Proxy/Stub 模式、一次拷贝原理。</description>
+    </item>
+    <item>
+      <title>车载 Android 全景：AAOS 到底是什么</title>
+      <link>https://jason5200.github.io/#/articles/00-overview/aaos-intro.md</link>
+      <guid>https://jason5200.github.io/#/articles/00-overview/aaos-intro.md</guid>
+      <pubDate>Sat, 15 Aug 2026 00:00:00 GMT</pubDate>
+      <description>AAOS 是什么、与手机 Android 的区别、架构分层、学习路径。</description>
+    </item>
+
+  </channel>
+</rss>

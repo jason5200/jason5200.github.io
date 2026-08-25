@@ -2,6 +2,7 @@
   - [关于本站](/)
   - [关于我](about.md)
   - [最新文章](README.md#最新文章)
+  - [文章归档](archive.md)
 
 - 📖 车载 Android（AAOS）
   - [全景：AAOS 到底是什么](articles/00-overview/aaos-intro.md)

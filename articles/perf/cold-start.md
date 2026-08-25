@@ -21,16 +21,12 @@
 
 一次冷启动（App 进程被杀后重新拉起）分三个阶段：
 
-```
-点击图标
-   │
-   ├── 1. 进程创建（fork + 加载）
-   │      ↓
-   ├── 2. Application 初始化（onCreate）
-   │      ↓
-   ├── 3. Activity 创建（onCreate → onResume）
-   │      ↓
-   └── 首帧渲染完成
+```mermaid
+flowchart TB
+    A["点击图标"] --> B["1. 进程创建<br/>(fork + 加载)"]
+    B --> C["2. Application 初始化<br/>(onCreate)"]
+    C --> D["3. Activity 创建<br/>(onCreate → onResume)"]
+    D --> E["首帧渲染完成"]
 ```
 
 | 阶段 | 主要耗时 | 可优化点 |
