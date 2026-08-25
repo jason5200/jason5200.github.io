@@ -51,6 +51,9 @@
 | 2026-08-27 | [Service 的启动与绑定机制](articles/framework/service-bind.md) |
 | 2026-08-27 | [Activity 生命周期与异常恢复](articles/framework/lifecycle-restore.md) |
 | 2026-08-27 | [Activity 启动模式与任务栈](articles/framework/launch-mode.md) |
+| 2026-08-27 | [端侧向量检索的 SQLite 优化](articles/rag/sqlite-vector.md) |
+| 2026-08-27 | [llama.cpp 的 KV Cache 实现](articles/ai/llamacpp-kvcache.md) |
+| 2026-08-27 | [View measure 的源码全链路](articles/framework/measure-source.md) |
 | 2026-08-27 | [Llama 注意力实现的源码解读](articles/ai/llama-attention.md) |
 | 2026-08-27 | [Looper 消息循环的 C++ 源码](articles/framework/looper-cpp.md) |
 | 2026-08-27 | [AIDL 生成代码的完整解读](articles/framework/aidl-generated.md) |
@@ -118,4 +121,4 @@
 
 ---
 
-> 共 **97 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **100 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
