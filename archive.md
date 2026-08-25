@@ -21,6 +21,12 @@
 
 | 日期 | 文章 |
 |------|------|
+| 2026-08-27 | [热修复原理深入：Tinker 与 Sophix](articles/framework/hotfix.md) |
+| 2026-08-27 | [ANR 原理与排查方法](articles/framework/anr.md) |
+| 2026-08-27 | [内存泄漏与 LeakCanary 原理](articles/framework/memory-leak.md) |
+| 2026-08-27 | [RecyclerView 缓存与复用机制](articles/framework/recyclerview.md) |
+| 2026-08-27 | [滑动冲突的完整解决方案](articles/framework/scroll-conflict.md) |
+| 2026-08-27 | [View 的 invalidate 与 requestLayout](articles/framework/invalidate-requestlayout.md) |
 | 2026-08-27 | [Window 与 WindowManager 体系](articles/framework/window.md) |
 | 2026-08-27 | [ContentProvider 的原理与使用](articles/framework/contentprovider.md) |
 | 2026-08-27 | [BroadcastReceiver 的动态注册与分发](articles/framework/broadcast.md) |
@@ -60,4 +66,4 @@
 
 ---
 
-> 共 **39 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **45 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。

@@ -40,7 +40,13 @@
   - [Choreographer 与渲染机制](articles/framework/choreographer.md)
   - [View 事件分发机制](articles/framework/touch-event.md)
   - [View 绘制流程：measure / layout / draw](articles/framework/draw-process.md)
+  - [View 的 invalidate 与 requestLayout](articles/framework/invalidate-requestlayout.md)
+  - [滑动冲突的完整解决方案](articles/framework/scroll-conflict.md)
+  - [RecyclerView 缓存与复用机制](articles/framework/recyclerview.md)
   - [类加载机制：ClassLoader 与双亲委派](articles/framework/classloader.md)
+  - [内存泄漏与 LeakCanary 原理](articles/framework/memory-leak.md)
+  - [ANR 原理与排查方法](articles/framework/anr.md)
+  - [热修复原理深入：Tinker 与 Sophix](articles/framework/hotfix.md)
 
 - 🚗 车载实战
   - [车机 Launcher 实战（Demo）](https://github.com/jason5200/Car-Launcher-Demo)
