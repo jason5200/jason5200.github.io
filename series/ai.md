@@ -36,6 +36,18 @@ flowchart TB
 4. **工程化** 是落地的关键，回答「Demo 怎么变成产品」。
 5. **RAG / 多模态 / Function Calling** 是进阶实战，掌握后能做真正的车载 AI 应用。
 
+## 🔬 源码级深度文章
+
+想深入到底层实现，读这些「源码精读」：
+
+| 主题 | 文章 |
+|------|------|
+| Transformer | [注意力机制数学推导](../articles/ai/attention-math.md) · [Llama 注意力源码](../articles/ai/llama-attention.md) · [llama.cpp KV Cache](../articles/ai/llamacpp-kvcache.md) · [llama.cpp RoPE](../articles/ai/llamacpp-rope.md) · [llama.cpp 采样算法](../articles/ai/llamacpp-sampling.md) |
+| 量化 | [量化误差分析](../articles/ai/quantization-error.md) · [QAT 量化感知训练](../articles/ai/qat.md) |
+| RAG | [向量检索实现](../articles/rag/rag-search-source.md) · [SQLite 向量优化](../articles/rag/sqlite-vector.md) |
+| Embedding | [Embedding 模型源码](../articles/ai/embedding-source.md) |
+| 推理 | [端侧推理性能优化](../articles/ai/inference-perf.md) |
+
 ## 配套资源
 
 - 🤖 Demo：[AI-Android-Demo](https://github.com/jason5200/AI-Android-Demo)

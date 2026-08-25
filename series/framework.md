@@ -40,6 +40,18 @@ flowchart TB
 4. **View 事件分发 → 绘制流程** 是「交互 → 显示」的 View 体系核心。
 5. **类加载机制** 是热修复、插件化的基础。
 
+## 🔬 源码级深度文章
+
+想深入到底层实现，读这些「源码精读」：
+
+| 主题 | 文章 |
+|------|------|
+| Binder | [mmap 一次拷贝的完整源码](../articles/framework/binder-mmap-deep.md) · [binder_transaction 源码](../articles/framework/binder-transaction-source.md) · [binder_proc/thread 结构源码](../articles/framework/binder-struct-source.md) · [线程池源码](../articles/framework/binder-threadpool-source.md) · [AIDL 生成代码](../articles/framework/aidl-generated.md) |
+| Handler | [native 唤醒机制](../articles/framework/handler-native-wakeup.md) · [Looper C++ 源码](../articles/framework/looper-cpp.md) · [epoll 事件循环](../articles/framework/looper-epoll-source.md) · [MessageQueue next 源码](../articles/framework/messagequeue-source.md) |
+| View | [measure 源码全链路](../articles/framework/measure-source.md) · [layout/draw 源码](../articles/framework/layout-draw-source.md) · [ViewRootImpl 源码](../articles/framework/viewrootimpl-source.md) · [硬件加速源码](../articles/framework/hw-render-source.md) · [事件分发源码](../articles/framework/touch-source.md) · [RecyclerView 缓存源码](../articles/framework/recyclerview-source.md) |
+| 组件 | [Service 启动源码](../articles/framework/service-source.md) · [ContentProvider 跨进程源码](../articles/framework/contentprovider-source.md) |
+| AMS | [进程管理源码](../articles/framework/ams-process-source.md) |
+
 ## 配套资源
 
 - 📚 仓库：[Framework-Source-Note](https://github.com/jason5200/Framework-Source-Note)
