@@ -8,6 +8,12 @@
 
 | 日期 | 文章 |
 |------|------|
+| 2026-08-27 | [车载 HUD：抬头显示](articles/multi-display/hud.md) |
+| 2026-08-27 | [车载仪表盘：Cluster 显示](articles/multi-display/cluster.md) |
+| 2026-08-27 | [车载倒车影像与环视系统](articles/perf/reverse-camera.md) |
+| 2026-08-27 | [车载多媒体：音频焦点与分区](articles/permission/multimedia.md) |
+| 2026-08-27 | [车载导航：从定位到路径规划](articles/ota/navigation.md) |
+| 2026-08-27 | [车载蓝牙电话：HFP 协议](articles/audio/bluetooth-hfp.md) |
 | 2026-08-27 | [Vehicle HAL 深入：从 AIDL 到实现](articles/permission/vehicle-hal.md) |
 | 2026-08-27 | [CarUxRestrictionsService：驾驶分心深入](articles/audio/car-ux.md) |
 | 2026-08-27 | [CarInfoService：车辆静态信息](articles/audio/car-info.md) |
@@ -72,4 +78,4 @@
 
 ---
 
-> 共 **51 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **57 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
