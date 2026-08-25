@@ -28,8 +28,8 @@
 ## 联系我
 
 - 💬 技术交流：GitHub Issues / Discussions
-- 📧 邮箱：jason5200@example.com
 - 🌐 GitHub：[jason5200](https://github.com/jason5200)
+- 📖 博客：jason5200.github.io
 
 ## 关于本站
 
