@@ -1,0 +1,98 @@
+/* 博客自定义样式 —— 深色科技风，贴合「车载座舱」主题 */
+
+:root {
+  --theme-color: #0ea5e9;           /* 主色调：科技蓝 */
+  --bg-color: #0f172a;              /* 深色背景 */
+  --text-color: #e2e8f0;
+  --link-color: #38bdf8;
+  --sidebar-bg: #1e293b;
+  --code-bg: #0b1120;
+}
+
+/* 页面整体 */
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* 侧边栏 */
+.sidebar {
+  background: var(--sidebar-bg);
+  border-right: 1px solid #334155;
+}
+.sidebar ul li a {
+  color: #cbd5e1;
+  font-size: 14px;
+}
+.sidebar ul li.active > a {
+  color: var(--link-color);
+  border-right: 2px solid var(--link-color);
+}
+
+/* 内容区 */
+.markdown-section {
+  max-width: 860px;
+}
+.markdown-section h1,
+.markdown-section h2,
+.markdown-section h3 {
+  color: #f1f5f9;
+}
+.markdown-section h2 {
+  border-bottom: 1px solid #334155;
+  padding-bottom: 8px;
+}
+.markdown-section a {
+  color: var(--link-color);
+}
+
+/* 代码块 */
+.markdown-section pre {
+  background: var(--code-bg);
+  border-radius: 8px;
+  border: 1px solid #334155;
+}
+.markdown-section code {
+  background: #1e293b;
+  color: #7dd3fc;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+.markdown-section pre code {
+  background: transparent;
+  color: #e2e8f0;
+}
+
+/* 表格 */
+.markdown-section table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+}
+.markdown-section th {
+  background: #1e293b;
+  color: #38bdf8;
+  font-weight: 600;
+}
+.markdown-section th,
+.markdown-section td {
+  border: 1px solid #334155;
+  padding: 8px 12px;
+}
+.markdown-section tr:nth-child(even) {
+  background: #1a2536;
+}
+
+/* 引用块 */
+.markdown-section blockquote {
+  border-left: 4px solid var(--theme-color);
+  background: #16233a;
+  color: #94a3b8;
+  padding: 10px 16px;
+  border-radius: 0 8px 8px 0;
+}
+
+/* 封面按钮 */
+.cover-main .btn {
+  border-radius: 8px;
+}

@@ -6,6 +6,7 @@
   <meta name="description" content="车载 Android · Android Framework · AI 应用落地的技术博客">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <link rel="stylesheet" href="assets/custom.css">
 </head>
 <body>
   <div id="app">加载中...</div>
@@ -15,16 +16,24 @@
       repo: 'https://github.com/jason5200/jason5200.github.io',
       loadSidebar: true,
       subMaxLevel: 3,
+      coverpage: true,
       auto2top: true,
+      themeColor: '#0ea5e9',
       search: {
         placeholder: '搜索文章',
         noData: '没有找到结果',
         depth: 4
+      },
+      copyCode: {
+        buttonText: '复制',
+        errorText: '复制失败',
+        successText: '已复制'
       }
     };
   </script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/copy-code.min.js"></script>
 </body>
 </html>
