@@ -10,6 +10,8 @@
 
 | 日期 | 文章 | 系列 |
 |------|------|------|
+| 更新中 | [同步屏障与异步消息](articles/framework/sync-barrier.md) | 📚 Android Framework |
+| 更新中 | [大模型上车：端侧推理的可行方案](articles/ai/on-device-llm.md) | 🤖 AI 上车 |
 | 更新中 | [Handler 消息机制：从 Looper 到 MessageQueue](articles/framework/handler-message-mechanism.md) | 📚 Android Framework |
 | 更新中 | [车机冷启动优化实战](articles/perf/cold-start.md) | 📖 车载 Android |
 | 更新中 | [一次 Binder 通信的完整流程](articles/framework/binder-full-flow.md) | 📚 Android Framework |
@@ -26,7 +28,7 @@
 | 📖 **车载 Android（AAOS）** | 全景 → CarService → 车辆属性 → 多屏 → 性能 | 🟢 连载中 |
 | 📚 **Android Framework** | Binder / Handler / AMS / WMS 源码精读 | 🟢 连载中 |
 | 🚗 **车载实战** | 车机 Launcher、多屏适配、性能优化 | 🟢 已开源 Demo |
-| 🤖 **AI 上车** | 大模型端侧推理、Agent、对话式车机 | 🟡 规划中 |
+| 🤖 **AI 上车** | 大模型端侧推理、Agent、对话式车机 | 🟢 连载中 |
 
 ## 🔗 我的开源项目
 
