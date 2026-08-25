@@ -51,6 +51,9 @@
 | 2026-08-27 | [Service 的启动与绑定机制](articles/framework/service-bind.md) |
 | 2026-08-27 | [Activity 生命周期与异常恢复](articles/framework/lifecycle-restore.md) |
 | 2026-08-27 | [Activity 启动模式与任务栈](articles/framework/launch-mode.md) |
+| 2026-08-27 | [RAG 向量检索的完整实现](articles/rag/rag-search-source.md) |
+| 2026-08-27 | [ViewRootImpl 绘制流程的完整源码](articles/framework/viewrootimpl-source.md) |
+| 2026-08-27 | [AMS 进程管理的完整源码](articles/framework/ams-process-source.md) |
 | 2026-08-27 | [注意力机制的数学推导](articles/ai/attention-math.md) |
 | 2026-08-27 | [CarService 启动流程的完整源码](articles/car-service/carservice-startup-source.md) |
 | 2026-08-27 | [RecyclerView 缓存复用的完整源码](articles/framework/recyclerview-source.md) |
@@ -112,4 +115,4 @@
 
 ---
 
-> 共 **91 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **94 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
