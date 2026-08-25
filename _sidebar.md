@@ -1,5 +1,6 @@
 - 首页
   - [关于本站](/)
+  - [关于我](about.md)
   - [最新文章](README.md#最新文章)
 
 - 📖 车载 Android（AAOS）
@@ -16,6 +17,7 @@
   - [同步屏障与异步消息](articles/framework/sync-barrier.md)
   - [AMS 启动流程解析](articles/framework/ams-startup.md)
   - [WMS 窗口管理解析](articles/framework/wms-window.md)
+  - [Choreographer 与渲染机制](articles/framework/choreographer.md)
 
 - 🚗 车载实战
   - [车机 Launcher 实战（Demo）](https://github.com/jason5200/Car-Launcher-Demo)
