@@ -10,6 +10,8 @@
 
 | 日期 | 文章 | 系列 |
 |------|------|------|
+| 更新中 | [AMS 启动流程解析](articles/framework/ams-startup.md) | 📚 Android Framework |
+| 更新中 | [车载语音助手：从 ASR 到 LLM](articles/ai/voice-assistant.md) | 🤖 AI 上车 |
 | 更新中 | [同步屏障与异步消息](articles/framework/sync-barrier.md) | 📚 Android Framework |
 | 更新中 | [大模型上车：端侧推理的可行方案](articles/ai/on-device-llm.md) | 🤖 AI 上车 |
 | 更新中 | [Handler 消息机制：从 Looper 到 MessageQueue](articles/framework/handler-message-mechanism.md) | 📚 Android Framework |

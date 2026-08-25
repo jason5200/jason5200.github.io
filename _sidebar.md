@@ -14,13 +14,15 @@
   - [一次 Binder 通信的完整流程](articles/framework/binder-full-flow.md)
   - [Handler 消息机制：从 Looper 到 MessageQueue](articles/framework/handler-message-mechanism.md)
   - [同步屏障与异步消息](articles/framework/sync-barrier.md)
+  - [AMS 启动流程解析](articles/framework/ams-startup.md)
 
 - 🚗 车载实战
   - [车机 Launcher 实战（Demo）](https://github.com/jason5200/Car-Launcher-Demo)
 
 - 🤖 AI 上车
   - [大模型上车：端侧推理的可行方案](articles/ai/on-device-llm.md)
-  - [车载语音助手：从 ASR 到 LLM（规划中）]()
+  - [车载语音助手：从 ASR 到 LLM](articles/ai/voice-assistant.md)
+  - [Agent 在车机场景的应用（规划中）]()
 
 - 关于
   - [GitHub 主页](https://github.com/jason5200)
