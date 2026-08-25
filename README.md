@@ -10,15 +10,15 @@
 
 | 日期 | 文章 | 系列 |
 |------|------|------|
+| 2026-08-26 | [类加载机制：ClassLoader 与双亲委派](articles/framework/classloader.md) | 📚 Framework |
+| 2026-08-26 | [消息队列与 IdleHandler](articles/framework/idlehandler.md) | 📚 Framework |
+| 2026-08-26 | [View 绘制流程：measure / layout / draw](articles/framework/draw-process.md) | 📚 Framework |
+| 2026-08-26 | [View 事件分发机制](articles/framework/touch-event.md) | 📚 Framework |
 | 2026-08-24 | [Choreographer 与渲染机制](articles/framework/choreographer.md) | 📚 Framework |
 | 2026-08-23 | [Binder 驱动层深入](articles/framework/binder-driver.md) | 📚 Framework |
 | 2026-08-23 | [端侧 AI 的工程化实践](articles/ai/ai-engineering.md) | 🤖 AI 上车 |
-| 2026-08-22 | [WMS 窗口管理解析](articles/framework/wms-window.md) | 📚 Framework |
-| 2026-08-22 | [Agent 在车机场景的应用](articles/ai/agent-cockpit.md) | 🤖 AI 上车 |
-| 2026-08-21 | [AMS 启动流程解析](articles/framework/ams-startup.md) | 📚 Framework |
-| 2026-08-21 | [车载语音助手：从 ASR 到 LLM](articles/ai/voice-assistant.md) | 🤖 AI 上车 |
 
-→ [查看全部 17 篇](archive.md)
+→ [查看全部文章](archive.md)
 
 ## 🧭 系列导航
 

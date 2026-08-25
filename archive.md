@@ -22,6 +22,10 @@
 
 | 日期 | 文章 |
 |------|------|
+| 2026-08-26 | [类加载机制：ClassLoader 与双亲委派](articles/framework/classloader.md) |
+| 2026-08-26 | [View 绘制流程：measure / layout / draw](articles/framework/draw-process.md) |
+| 2026-08-26 | [View 事件分发机制](articles/framework/touch-event.md) |
+| 2026-08-26 | [消息队列与 IdleHandler](articles/framework/idlehandler.md) |
 | 2026-08-24 | [Choreographer 与渲染机制](articles/framework/choreographer.md) |
 | 2026-08-23 | [Binder 驱动层深入](articles/framework/binder-driver.md) |
 | 2026-08-22 | [WMS 窗口管理解析](articles/framework/wms-window.md) |
@@ -33,4 +37,4 @@
 
 ---
 
-> 共 **17 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **21 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。

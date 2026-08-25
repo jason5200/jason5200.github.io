@@ -18,10 +18,14 @@
   - [一次 Binder 通信的完整流程](articles/framework/binder-full-flow.md)
   - [Binder 驱动层深入](articles/framework/binder-driver.md)
   - [Handler 消息机制：从 Looper 到 MessageQueue](articles/framework/handler-message-mechanism.md)
+  - [消息队列与 IdleHandler](articles/framework/idlehandler.md)
   - [同步屏障与异步消息](articles/framework/sync-barrier.md)
   - [AMS 启动流程解析](articles/framework/ams-startup.md)
   - [WMS 窗口管理解析](articles/framework/wms-window.md)
   - [Choreographer 与渲染机制](articles/framework/choreographer.md)
+  - [View 事件分发机制](articles/framework/touch-event.md)
+  - [View 绘制流程：measure / layout / draw](articles/framework/draw-process.md)
+  - [类加载机制：ClassLoader 与双亲委派](articles/framework/classloader.md)
 
 - 🚗 车载实战
   - [车机 Launcher 实战（Demo）](https://github.com/jason5200/Car-Launcher-Demo)
