@@ -39,6 +39,9 @@
   - [车载语音助手：从 ASR 到 LLM](articles/ai/voice-assistant.md)
   - [Agent 在车机场景的应用](articles/ai/agent-cockpit.md)
   - [端侧 AI 的工程化实践](articles/ai/ai-engineering.md)
+  - [车载 RAG 实战：本地知识库问答](articles/rag/car-rag.md)
+  - [车载多模态：语音 + 视觉融合](articles/multimodal/multimodal.md)
+  - [Agent 框架：Function Calling 实战](articles/agent/agent-framework.md)
 
 - 关于
   - [GitHub 主页](https://github.com/jason5200)
