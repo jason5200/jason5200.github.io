@@ -5,6 +5,7 @@
   - [文章归档](archive.md)
 
 - 📖 车载 Android（AAOS）
+  - [系列导读](series/aaos.md)
   - [全景：AAOS 到底是什么](articles/00-overview/aaos-intro.md)
   - [CarService 架构：从 SystemServer 到车辆服务](articles/car-service/carservice-architecture.md)
   - [CarPropertyManager：读写车辆属性](articles/carservice-api/carproperty-manager.md)
@@ -12,6 +13,7 @@
   - [车机冷启动优化实战](articles/perf/cold-start.md)
 
 - 📚 Android Framework
+  - [系列导读](series/framework.md)
   - [Binder 机制总览：为什么 Android 用它做 IPC](articles/framework/binder-overview.md)
   - [一次 Binder 通信的完整流程](articles/framework/binder-full-flow.md)
   - [Binder 驱动层深入](articles/framework/binder-driver.md)
@@ -25,6 +27,7 @@
   - [车机 Launcher 实战（Demo）](https://github.com/jason5200/Car-Launcher-Demo)
 
 - 🤖 AI 上车
+  - [系列导读](series/ai.md)
   - [大模型上车：端侧推理的可行方案](articles/ai/on-device-llm.md)
   - [车载语音助手：从 ASR 到 LLM](articles/ai/voice-assistant.md)
   - [Agent 在车机场景的应用](articles/ai/agent-cockpit.md)
@@ -35,3 +38,5 @@
   - [AAOS-Guide 仓库](https://github.com/jason5200/AAOS-Guide)
   - [Framework-Source-Note 仓库](https://github.com/jason5200/Framework-Source-Note)
   - [Car-Launcher-Demo 仓库](https://github.com/jason5200/Car-Launcher-Demo)
+  - [AI-Android-Demo 仓库](https://github.com/jason5200/AI-Android-Demo)
+  - [RSS 订阅](feed.xml)

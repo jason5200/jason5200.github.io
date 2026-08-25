@@ -10,38 +10,31 @@
 
 | 日期 | 文章 | 系列 |
 |------|------|------|
-| 更新中 | [Binder 驱动层深入](articles/framework/binder-driver.md) | 📚 Android Framework |
-| 更新中 | [端侧 AI 的工程化实践](articles/ai/ai-engineering.md) | 🤖 AI 上车 |
-| 更新中 | [Choreographer 与渲染机制](articles/framework/choreographer.md) | 📚 Android Framework |
-| 更新中 | [WMS 窗口管理解析](articles/framework/wms-window.md) | 📚 Android Framework |
-| 更新中 | [Agent 在车机场景的应用](articles/ai/agent-cockpit.md) | 🤖 AI 上车 |
-| 更新中 | [AMS 启动流程解析](articles/framework/ams-startup.md) | 📚 Android Framework |
-| 更新中 | [车载语音助手：从 ASR 到 LLM](articles/ai/voice-assistant.md) | 🤖 AI 上车 |
-| 更新中 | [同步屏障与异步消息](articles/framework/sync-barrier.md) | 📚 Android Framework |
-| 更新中 | [大模型上车：端侧推理的可行方案](articles/ai/on-device-llm.md) | 🤖 AI 上车 |
-| 更新中 | [Handler 消息机制：从 Looper 到 MessageQueue](articles/framework/handler-message-mechanism.md) | 📚 Android Framework |
-| 更新中 | [车机冷启动优化实战](articles/perf/cold-start.md) | 📖 车载 Android |
-| 更新中 | [一次 Binder 通信的完整流程](articles/framework/binder-full-flow.md) | 📚 Android Framework |
-| 更新中 | [Binder 机制总览：为什么 Android 用它做 IPC](articles/framework/binder-overview.md) | 📚 Android Framework |
-| 更新中 | [车机多屏显示：从 Display 到 Surface 的链路](articles/multi-display/multi-display.md) | 📖 车载 Android |
-| 更新中 | [CarPropertyManager：如何读写车辆属性](articles/carservice-api/carproperty-manager.md) | 📖 车载 Android |
-| 更新中 | [CarService 架构：从 SystemServer 到车辆服务](articles/car-service/carservice-architecture.md) | 📖 车载 Android |
-| 更新中 | [车载 Android 全景：AAOS 到底是什么](articles/00-overview/aaos-intro.md) | 📖 车载 Android |
+| 2026-08-24 | [Choreographer 与渲染机制](articles/framework/choreographer.md) | 📚 Framework |
+| 2026-08-23 | [Binder 驱动层深入](articles/framework/binder-driver.md) | 📚 Framework |
+| 2026-08-23 | [端侧 AI 的工程化实践](articles/ai/ai-engineering.md) | 🤖 AI 上车 |
+| 2026-08-22 | [WMS 窗口管理解析](articles/framework/wms-window.md) | 📚 Framework |
+| 2026-08-22 | [Agent 在车机场景的应用](articles/ai/agent-cockpit.md) | 🤖 AI 上车 |
+| 2026-08-21 | [AMS 启动流程解析](articles/framework/ams-startup.md) | 📚 Framework |
+| 2026-08-21 | [车载语音助手：从 ASR 到 LLM](articles/ai/voice-assistant.md) | 🤖 AI 上车 |
+
+→ [查看全部 17 篇](archive.md)
 
 ## 🧭 系列导航
 
 | 系列 | 说明 | 状态 |
 |------|------|------|
-| 📖 **车载 Android（AAOS）** | 全景 → CarService → 车辆属性 → 多屏 → 性能 | 🟢 连载中 |
-| 📚 **Android Framework** | Binder / Handler / AMS / WMS 源码精读 | 🟢 连载中 |
-| 🚗 **车载实战** | 车机 Launcher、多屏适配、性能优化 | 🟢 已开源 Demo |
-| 🤖 **AI 上车** | 大模型端侧推理、Agent、对话式车机 | 🟢 连载中 |
+| 📖 [车载 Android（AAOS）](series/aaos.md) | 全景 → CarService → 车辆属性 → 多屏 → 性能 | 🟢 8 篇 |
+| 📚 [Android Framework](series/framework.md) | Binder → Handler → AMS/WMS → 渲染 | 🟢 8 篇 |
+| 🤖 [AI 上车](series/ai.md) | 端侧推理 → 语音 → Agent → 工程化 | 🟢 4 篇 |
+| 🚗 **车载实战** | 车机 Launcher、AI 对话 Demo | 🟢 已开源 |
 
 ## 🔗 我的开源项目
 
 - 📖 [AAOS-Guide](https://github.com/jason5200/AAOS-Guide) —— 车载 Android 学习路线与实战教程
 - 📚 [Framework-Source-Note](https://github.com/jason5200/Framework-Source-Note) —— Android Framework 源码精读笔记
 - 🧩 [Car-Launcher-Demo](https://github.com/jason5200/Car-Launcher-Demo) —— 车机 Launcher 实战 Demo
+- 🤖 [AI-Android-Demo](https://github.com/jason5200/AI-Android-Demo) —— 大模型 × Android 落地示例
 
 ## 📌 写作信条
 
@@ -54,7 +47,6 @@
 车载 Android 系统开发者，专注智能座舱、Android Framework 与 AI 上车。
 
 - GitHub：[jason5200](https://github.com/jason5200)
-- 邮箱：jason5200@example.com
-- 公众号：Jason 的码上座舱
+- 博客：jason5200.github.io
 
 欢迎通过 GitHub Issues / PR 参与共建，一起把车载 Android 与 AI 做好玩一点！
