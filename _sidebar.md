@@ -25,6 +25,12 @@
   - [车载蓝牙电话：HFP 协议](articles/audio/bluetooth-hfp.md)
   - [车载导航：从定位到路径规划](articles/ota/navigation.md)
   - [车载 OTA 升级：差分包与 A/B 分区](articles/ota/ota-upgrade.md)
+  - [车载通信：V2X 车联网](articles/ota/v2x.md)
+  - [车载安全：功能安全与 ISO 26262](articles/ota/functional-safety.md)
+  - [车载网络安全：CAN 总线安全](articles/ota/can-security.md)
+  - [车载启动流程：从开机到座舱可用](articles/perf/boot-process.md)
+  - [车载内存优化：低内存设备](articles/perf/memory-optimization.md)
+  - [车载测试：模拟器与 HIL 测试](articles/perf/testing.md)
   - [CarService 权限模型：权限与驾驶分心](articles/permission/car-permission.md)
 
 - 📚 Android Framework

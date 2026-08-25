@@ -8,6 +8,12 @@
 
 | 日期 | 文章 |
 |------|------|
+| 2026-08-27 | [车载测试：模拟器与 HIL 测试](articles/perf/testing.md) |
+| 2026-08-27 | [车载内存优化：低内存设备](articles/perf/memory-optimization.md) |
+| 2026-08-27 | [车载启动流程：从开机到座舱可用](articles/perf/boot-process.md) |
+| 2026-08-27 | [车载网络安全：CAN 总线安全](articles/ota/can-security.md) |
+| 2026-08-27 | [车载安全：功能安全与 ISO 26262](articles/ota/functional-safety.md) |
+| 2026-08-27 | [车载通信：V2X 车联网](articles/ota/v2x.md) |
 | 2026-08-27 | [车载 HUD：抬头显示](articles/multi-display/hud.md) |
 | 2026-08-27 | [车载仪表盘：Cluster 显示](articles/multi-display/cluster.md) |
 | 2026-08-27 | [车载倒车影像与环视系统](articles/perf/reverse-camera.md) |
@@ -78,4 +84,4 @@
 
 ---
 
-> 共 **57 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **63 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
