@@ -10,6 +10,8 @@
 
 | 日期 | 文章 | 系列 |
 |------|------|------|
+| 更新中 | [Binder 机制总览：为什么 Android 用它做 IPC](articles/framework/binder-overview.md) | 📚 Android Framework |
+| 更新中 | [车机多屏显示：从 Display 到 Surface 的链路](articles/multi-display/multi-display.md) | 📖 车载 Android |
 | 更新中 | [CarPropertyManager：如何读写车辆属性](articles/carservice-api/carproperty-manager.md) | 📖 车载 Android |
 | 更新中 | [CarService 架构：从 SystemServer 到车辆服务](articles/car-service/carservice-architecture.md) | 📖 车载 Android |
 | 更新中 | [车载 Android 全景：AAOS 到底是什么](articles/00-overview/aaos-intro.md) | 📖 车载 Android |
@@ -19,13 +21,14 @@
 | 系列 | 说明 | 状态 |
 |------|------|------|
 | 📖 **车载 Android（AAOS）** | 全景 → CarService → 车辆属性 → 多屏 → 性能 | 🟢 连载中 |
-| 📚 **Android Framework** | Binder / Handler / AMS / WMS 源码精读 | 🟡 规划中 |
+| 📚 **Android Framework** | Binder / Handler / AMS / WMS 源码精读 | 🟢 连载中 |
 | 🚗 **车载实战** | 车机 Launcher、多屏适配、性能优化 | 🟢 已开源 Demo |
 | 🤖 **AI 上车** | 大模型端侧推理、Agent、对话式车机 | 🟡 规划中 |
 
 ## 🔗 我的开源项目
 
 - 📖 [AAOS-Guide](https://github.com/jason5200/AAOS-Guide) —— 车载 Android 学习路线与实战教程
+- 📚 [Framework-Source-Note](https://github.com/jason5200/Framework-Source-Note) —— Android Framework 源码精读笔记
 - 🧩 [Car-Launcher-Demo](https://github.com/jason5200/Car-Launcher-Demo) —— 车机 Launcher 实战 Demo
 
 ## 📌 写作信条

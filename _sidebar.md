@@ -6,9 +6,11 @@
   - [全景：AAOS 到底是什么](articles/00-overview/aaos-intro.md)
   - [CarService 架构：从 SystemServer 到车辆服务](articles/car-service/carservice-architecture.md)
   - [CarPropertyManager：读写车辆属性](articles/carservice-api/carproperty-manager.md)
+  - [车机多屏显示：Display 到 Surface](articles/multi-display/multi-display.md)
 
 - 📚 Android Framework
-  - [Binder 精读（规划中）](articles/framework/binder.md)
+  - [Binder 机制总览：为什么 Android 用它做 IPC](articles/framework/binder-overview.md)
+  - [一次 Binder 通信的完整流程（规划中）]()
 
 - 🚗 车载实战
   - [车机 Launcher 骨架（规划中）]()
