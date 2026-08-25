@@ -11,6 +11,7 @@
   <meta property="og:description" content="车载 Android · Android Framework · AI 应用落地的技术博客">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://jason5200.github.io">
+  <link rel="canonical" href="https://jason5200.github.io">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/buble.css">
   <link rel="stylesheet" href="assets/custom.css">
 </head>
@@ -71,10 +72,27 @@
             next(wrap.innerHTML);
           });
 
-          // 每次页面切换后渲染 mermaid
+          // 每次页面切换后渲染 mermaid + 更新 SEO
           hook.doneEach(function () {
             if (window.mermaid) {
               mermaid.run({ querySelector: '.mermaid' });
+            }
+
+            // SEO：动态更新 title 和 description
+            var h1 = document.querySelector('.markdown-section h1');
+            if (h1) {
+              var title = h1.textContent.trim();
+              // 更新浏览器标签页标题
+              document.title = title + ' | Jason 的码上座舱';
+              // 更新 og:title
+              var ogTitle = document.querySelector('meta[property="og:title"]');
+              if (ogTitle) ogTitle.setAttribute('content', title);
+              // 更新 og:url
+              var ogUrl = document.querySelector('meta[property="og:url"]');
+              if (ogUrl) ogUrl.setAttribute('content', 'https://jason5200.github.io' + location.hash);
+              // 更新 canonical
+              var canonical = document.querySelector('link[rel="canonical"]');
+              if (canonical) canonical.setAttribute('href', 'https://jason5200.github.io' + location.hash);
             }
           });
         }
@@ -104,6 +122,21 @@
       var bar = document.getElementById('reading-progress');
       if (bar) bar.style.width = progress + '%';
     });
+  </script>
+
+  <!-- JSON-LD 结构化数据：帮助搜索引擎理解博客结构 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Jason 的码上座舱",
+    "url": "https://jason5200.github.io",
+    "description": "车载 Android（AAOS）· Android Framework 源码精读 · AI 应用落地的技术博客",
+    "author": {
+      "@type": "Person",
+      "name": "jason5200"
+    }
+  }
   </script>
 </body>
 </html>

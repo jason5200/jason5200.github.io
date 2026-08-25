@@ -51,6 +51,8 @@
 | 2026-08-27 | [Service 的启动与绑定机制](articles/framework/service-bind.md) |
 | 2026-08-27 | [Activity 生命周期与异常恢复](articles/framework/lifecycle-restore.md) |
 | 2026-08-27 | [Activity 启动模式与任务栈](articles/framework/launch-mode.md) |
+| 2026-08-27 | [Handler native 层唤醒机制](articles/framework/handler-native-wakeup.md) |
+| 2026-08-27 | [Binder mmap 一次拷贝的完整源码](articles/framework/binder-mmap-deep.md) |
 | 2026-08-27 | [主线程卡顿检测与 BlockCanary 原理](articles/framework/blockcanary.md) |
 | 2026-08-27 | [Looper 的退出与消息循环的边界](articles/framework/looper-exit.md) |
 | 2026-08-27 | [HandlerThread 与 IntentService](articles/framework/handlerthread.md) |
@@ -107,4 +109,4 @@
 
 ---
 
-> 共 **86 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **88 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
