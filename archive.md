@@ -21,6 +21,12 @@
 
 | 日期 | 文章 |
 |------|------|
+| 2026-08-27 | [主线程卡顿检测与 BlockCanary 原理](articles/framework/blockcanary.md) |
+| 2026-08-27 | [Looper 的退出与消息循环的边界](articles/framework/looper-exit.md) |
+| 2026-08-27 | [HandlerThread 与 IntentService](articles/framework/handlerthread.md) |
+| 2026-08-27 | [Binder 的 oneway 异步调用](articles/framework/oneway.md) |
+| 2026-08-27 | [AIDL 深入：in/out/inout 与 Parcelable](articles/framework/aidl-deep.md) |
+| 2026-08-27 | [Binder 连接池与多线程并发](articles/framework/binder-pool.md) |
 | 2026-08-26 | [类加载机制：ClassLoader 与双亲委派](articles/framework/classloader.md) |
 | 2026-08-26 | [View 绘制流程：measure / layout / draw](articles/framework/draw-process.md) |
 | 2026-08-26 | [View 事件分发机制](articles/framework/touch-event.md) |
@@ -48,4 +54,4 @@
 
 ---
 
-> 共 **27 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **33 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
