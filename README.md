@@ -10,6 +10,8 @@
 
 | 日期 | 文章 | 系列 |
 |------|------|------|
+| 更新中 | [WMS 窗口管理解析](articles/framework/wms-window.md) | 📚 Android Framework |
+| 更新中 | [Agent 在车机场景的应用](articles/ai/agent-cockpit.md) | 🤖 AI 上车 |
 | 更新中 | [AMS 启动流程解析](articles/framework/ams-startup.md) | 📚 Android Framework |
 | 更新中 | [车载语音助手：从 ASR 到 LLM](articles/ai/voice-assistant.md) | 🤖 AI 上车 |
 | 更新中 | [同步屏障与异步消息](articles/framework/sync-barrier.md) | 📚 Android Framework |
