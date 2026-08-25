@@ -21,6 +21,12 @@
 
 | 日期 | 文章 |
 |------|------|
+| 2026-08-27 | [Window 与 WindowManager 体系](articles/framework/window.md) |
+| 2026-08-27 | [ContentProvider 的原理与使用](articles/framework/contentprovider.md) |
+| 2026-08-27 | [BroadcastReceiver 的动态注册与分发](articles/framework/broadcast.md) |
+| 2026-08-27 | [Service 的启动与绑定机制](articles/framework/service-bind.md) |
+| 2026-08-27 | [Activity 生命周期与异常恢复](articles/framework/lifecycle-restore.md) |
+| 2026-08-27 | [Activity 启动模式与任务栈](articles/framework/launch-mode.md) |
 | 2026-08-27 | [主线程卡顿检测与 BlockCanary 原理](articles/framework/blockcanary.md) |
 | 2026-08-27 | [Looper 的退出与消息循环的边界](articles/framework/looper-exit.md) |
 | 2026-08-27 | [HandlerThread 与 IntentService](articles/framework/handlerthread.md) |
@@ -54,4 +60,4 @@
 
 ---
 
-> 共 **33 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
+> 共 **39 篇**文章，持续更新中。欢迎通过 [GitHub](https://github.com/jason5200) 关注最新动态。
