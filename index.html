@@ -80,25 +80,28 @@
             next(wrap.innerHTML);
           });
 
-          // 每次页面切换后渲染 mermaid + 更新 SEO
           hook.doneEach(function () {
             if (window.mermaid) {
               mermaid.run({ querySelector: '.mermaid' });
             }
 
-            // SEO：动态更新 title 和 description
+            if (window.__docsifyAbsRoute) {
+              document.querySelectorAll('a[href]').forEach(function (a) {
+                var href = a.getAttribute('href') || '';
+                if (href.indexOf('..') === -1 && href.indexOf('#/middleware') === -1) return;
+                var route = window.__docsifyAbsRoute(href);
+                if (route) a.setAttribute('href', '#/' + route);
+              });
+            }
+
             var h1 = document.querySelector('.markdown-section h1');
             if (h1) {
               var title = h1.textContent.trim();
-              // 更新浏览器标签页标题
               document.title = title + ' | Jason 的码上座舱';
-              // 更新 og:title
               var ogTitle = document.querySelector('meta[property="og:title"]');
               if (ogTitle) ogTitle.setAttribute('content', title);
-              // 更新 og:url
               var ogUrl = document.querySelector('meta[property="og:url"]');
               if (ogUrl) ogUrl.setAttribute('content', 'https://jason5200.github.io' + location.hash);
-              // 更新 canonical
               var canonical = document.querySelector('link[rel="canonical"]');
               if (canonical) canonical.setAttribute('href', 'https://jason5200.github.io' + location.hash);
             }
@@ -109,40 +112,62 @@
   </script>
 
   <script>
-    // Docsify hash 路由不会解析 .. ，把错误短链改到 /articles/...
+    // Docsify hash 路由不会解析 .. 。分页「下一篇」会生成 #/../xxx，这里统一纠正。
     (function () {
-      var hash = location.hash || '';
-      var raw = hash.replace(/^#\/?/, '').replace(/\.md$/, '');
-      if (!raw) return;
       var shorts = {
         middleware: 'articles/00-overview/middleware',
         'aaos-intro': 'articles/00-overview/aaos-intro'
       };
-      if (shorts[raw]) {
-        location.replace('#/' + shorts[raw]);
-        return;
-      }
-      if (raw.indexOf('..') === -1) return;
-      var parts = raw.split('/');
-      var stack = [];
-      for (var i = 0; i < parts.length; i++) {
-        var p = parts[i];
-        if (!p || p === '.') continue;
-        if (p === '..') {
-          stack.pop();
-          continue;
-        }
-        stack.push(p);
-      }
       var folders = {
         'car-service': 1, 'carservice-api': 1, audio: 1, permission: 1,
         '00-overview': 1, framework: 1, ai: 1, rag: 1, perf: 1, ota: 1,
         'multi-display': 1, agent: 1, multimodal: 1
       };
-      if (stack[0] && folders[stack[0]]) {
-        stack.unshift('articles');
+
+      function absRoute(href) {
+        var raw = String(href || '').replace(/^#\/?/, '').replace(/\.md$/, '');
+        if (!raw) return '';
+        if (shorts[raw]) return shorts[raw];
+        if (raw.indexOf('..') === -1) return raw;
+        var parts = raw.split('/');
+        var stack = [];
+        for (var i = 0; i < parts.length; i++) {
+          var p = parts[i];
+          if (!p || p === '.') continue;
+          if (p === '..') {
+            stack.pop();
+            continue;
+          }
+          stack.push(p);
+        }
+        if (stack[0] && folders[stack[0]]) stack.unshift('articles');
+        return stack.join('/');
       }
-      location.replace('#/' + stack.join('/'));
+
+      window.__docsifyAbsRoute = absRoute;
+
+      function fixLocationHash() {
+        var hash = location.hash || '';
+        var raw = hash.replace(/^#\/?/, '').replace(/\.md$/, '');
+        if (!raw) return;
+        if (raw.indexOf('..') === -1 && !shorts[raw]) return;
+        var next = absRoute(hash);
+        if (next && next !== raw) location.replace('#/' + next);
+      }
+
+      document.addEventListener('click', function (e) {
+        var a = e.target && e.target.closest ? e.target.closest('a') : null;
+        if (!a) return;
+        var href = a.getAttribute('href') || '';
+        if (href.indexOf('..') === -1 && href.indexOf('#/middleware') === -1 && href.indexOf('#/aaos-intro') === -1) return;
+        var route = absRoute(href);
+        if (!route) return;
+        e.preventDefault();
+        location.hash = '#/' + route;
+      }, true);
+
+      window.addEventListener('hashchange', fixLocationHash);
+      fixLocationHash();
     })();
   </script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
