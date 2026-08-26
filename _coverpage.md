@@ -1,11 +1,11 @@
-# Jason 的码上座舱 🚗
+# 码上座舱
 
-> 车载 Android · Android Framework · AI 应用落地的技术博客
+> 车载 Android · Framework 源码 · AI 上车
 
-- 从源码到座舱，把 Android 与 AI 讲透、做透
-- 17 篇体系化文章 · 4 个开源项目 · 持续更新
-- 不写没验证过的代码，不讲没跑通的技术
+- 车载主线 28 篇 · Framework 48 篇 · AI 选读 41 篇
+- 源码默认对照 AOSP `android-14.0.0_r67`
+- Demo 会标明 Mock 还是真实后端
 
 [开始阅读](README.md)
-[文章归档](archive.md)
+[车载主线](series/aaos.md)
 [GitHub](https://github.com/jason5200)
