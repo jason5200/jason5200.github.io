@@ -29,30 +29,21 @@
 
 AAOS 在 AOSP 基础上，**新增了汽车专属的一整套服务栈**，这才是它的核心价值。
 
-```mermaid
-graph TB
-    subgraph App["应用层"]
-        A["车载应用（Launcher / 地图 / 语音）"]
-    end
-    subgraph API["Car API 层"]
-        B["android.car / CarProperty"]
-    end
-    subgraph Svc["CarService 服务层"]
-        C1["CarPropertyService"]
-        C2["CarHvacService"]
-        C3["CarSensorService"]
-        C4["CarInfoService"]
-    end
-    subgraph HAL["Vehicle HAL 层"]
-        D["车辆硬件抽象（CAN 总线 / ECU / 传感器）"]
-    end
-    subgraph Kernel["内核层"]
-        E["Linux Kernel + 车载硬件"]
-    end
-    A --> B --> Svc --> D --> E
+```
+应用
+  android.car（CarPropertyManager / CarAudioManager / …）
+        │
+        ▼
+com.android.car（CarService：Property / Power / Audio / UX）
+        │
+        ▼
+Vehicle HAL（AIDL IVehicle）
+        │
+        ▼
+网关 / ECU / 总线
 ```
 
-**关键理解**：AAOS 多出来的这一层 `CarService`，作用就是把「车辆硬件能力」抽象成「Android 服务」，让 App 能像调用普通系统服务一样，调用车辆功能（空调、车速、续航、门窗等）。
+中间件主干是 **车辆属性（Property）**。空调、VIN、车速都走 `CarPropertyManager`；旧的 Hvac / Sensor / Info Manager 已废弃。下一篇请先读 [中间件地图](middleware.md)。
 
 ## 三、AAOS 与手机 Android 的 5 个本质区别
 
@@ -104,11 +95,11 @@ AAOS 的 App 要在 `AndroidManifest.xml` 里声明自己是「汽车应用」�
 不要一上来就啃源码，按这个顺序更高效：
 
 1. **建立全景**（本文）—— 知道 AAOS 是什么、和手机的区别
-2. **跑一个 AAOS 模拟器** —— 下载系统镜像，亲手体验
-3. **读 CarService 架构** —— 理解服务如何分层、如何启动
-4. **动手调 CarPropertyManager** —— 读写一个车辆属性
-5. **做实战 Demo** —— 比如车机 Launcher（见 `Car-Launcher-Demo`）
-6. **深入性能与 AI 上车** —— 进阶方向
+2. **中间件地图** —— [middleware.md](middleware.md)
+3. **跑一个 AAOS 模拟器** —— 亲手看 `dumpsys car_service`
+4. **CarService 架构 + Property API** —— 读/写/订阅一条属性
+5. **Vehicle HAL** —— 再看契约和 vendor 该改哪
+6. **Launcher Demo** —— [Car-Launcher-Demo](https://github.com/jason5200/Car-Launcher-Demo)
 
 ## 六、总结
 
@@ -121,6 +112,4 @@ AAOS 的 App 要在 `AndroidManifest.xml` 里声明自己是「汽车应用」�
 
 ---
 
-**下一篇预告**：《CarService 架构：从 SystemServer 到车辆服务》
-
-> 配套仓库：[AAOS-Guide](https://github.com/jason5200/AAOS-Guide) · 实战 Demo：[Car-Launcher-Demo](https://github.com/jason5200/Car-Launcher-Demo)
+**下一篇**：[车载中间件地图](middleware.md)

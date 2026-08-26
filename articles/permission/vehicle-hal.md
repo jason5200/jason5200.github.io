@@ -1,152 +1,112 @@
-# Vehicle HAL 深入：从 AIDL 到实现
+# Vehicle HAL：AIDL 契约和 vendor 实现
 
 > 系列：AAOS-Guide · 12-vehicle-hal
-> 难度：⭐⭐⭐⭐⭐ 深入
-> 更新：2026-08-27
-> 前置知识：《CarService 架构》《AIDL 深入》
+> 难度：⭐⭐⭐⭐ 深入
+> 更新：2026-08-26
+> 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
+> 前置知识：[《中间件地图》](../00-overview/middleware.md)、[《CarPropertyManager》](../carservice-api/carproperty-manager.md)
 
 ---
 
-## 一、Vehicle HAL 是什么
+CarService **不准**直接解析 CAN。和车的边界是 **Vehicle HAL**：AIDL 接口 `android.hardware.automotive.vehicle.IVehicle`。
 
-Vehicle HAL（硬件抽象层）是 CarService 和车辆硬件之间的「翻译官」：
+Android 13 起默认讲 AIDL；Android 11/12 文档里常见 HIDL `android.hardware.automotive.vehicle@2.0::IVehicle` 的同步 `get/set/subscribe`。本仓库按 **14 的 AIDL** 写。
 
-```mermaid
-flowchart TB
-    A["CarService"] --> B["Vehicle HAL（AIDL 接口）"]
-    B --> C["HAL 实现（vendor）"]
-    C --> D["CAN 总线 / ECU"]
+## 一、它在栈里的位置
+
+```
+CarPropertyService / Power 等
+        │
+   VehicleStub（Java，屏蔽 HIDL/AIDL 差异）
+        │ Binder (HwBinder / AIDL)
+        ▼
+IVehicle（HAL 进程，vendor）
+        │
+   MCU / 网关 / 车身总线
 ```
 
-**核心理解**：CarService 不直接碰 CAN 总线，而是通过 Vehicle HAL 的 AIDL 接口与硬件交互。这样上层的 CarService 与具体的硬件实现解耦。
+改一款车，通常改 HAL 实现和 `VehiclePropConfig` 表，而不是改 `CarPropertyManager`。
 
-## 二、Vehicle HAL 的 AIDL 定义
+## 二、AIDL 上的 IVehicle（14）
 
-Vehicle HAL 用 AIDL 定义接口，位于 AOSP 的 `hardware/interfaces/automotive/vehicle`：
+路径：`hardware/interfaces/automotive/vehicle/aidl/`。
 
-```java
-// IVehicle.aidl（简化）
-interface IVehicle {
-    // 读取属性
-    VehiclePropValue get(VehiclePropValue requestProp);
+能力可以记成四类（方法名以仓库里的 aidl 为准）：
 
-    // 设置属性
-    void set(VehiclePropValue propValue);
-
-    // 订阅属性变化
-    void subscribe(IVehicleCallback callback, List<SubscribeOptions> options);
-}
-```
-
-## 三、VehiclePropValue 数据结构
-
-这是 Vehicle HAL 的核心数据结构：
-
-```java
-// 车辆属性值（简化）
-struct VehiclePropValue {
-    int prop;          // 属性 ID（如 VEHICLE_SPEED）
-    int areaId;        // 区域（多区时）
-    int status;        // 状态（可用/不可用）
-    long timestamp;    // 时间戳
-    int valueType;     // 值类型（int/float/string...）
-    // 具体值
-    int intValue;
-    float floatValue;
-    String stringValue;
-}
-```
-
-## 四、一次读车速的完整链路
-
-```mermaid
-sequenceDiagram
-    participant App as 应用
-    participant CS as CarPropertyService
-    participant HAL as Vehicle HAL
-    participant HW as CAN总线
-    App->>CS: getProperty(VEHICLE_SPEED)
-    CS->>HAL: IVehicle.get(VehiclePropValue)
-    HAL->>HW: 读 CAN 总线车速
-    HW-->>HAL: 车速值
-    HAL-->>CS: VehiclePropValue
-    CS-->>App: 车速
-```
-
-## 五、属性订阅机制（Subscribe）
-
-CarService 通过订阅机制持续获取属性变化，而不是轮询：
-
-```java
-// CarPropertyService 订阅车速变化
-IVehicleCallback callback = new IVehicleCallback.Stub() {
-    @Override
-    public void onPropertyEvent(List<VehiclePropValue> values) {
-        // 属性变化，更新缓存并通知上层
-        for (VehiclePropValue v : values) {
-            updateCache(v);
-            notifyListeners(v);
-        }
-    }
-};
-
-vehicle.subscribe(callback, subscribeOptions);
-```
-
-**核心理解**：订阅比轮询高效，硬件只在值变化时上报。
-
-## 六、HAL 实现（vendor 侧）
-
-车企或供应商负责实现 Vehicle HAL：
-
-```cpp
-// vendor 的 HAL 实现（C++ 简化）
-class VehicleHalImpl : public IVehicle {
-    VehiclePropValue get(VehiclePropValue request) override {
-        int propId = request.prop;
-        // 通过 CAN 总线读取
-        float speed = readSpeedFromCanBus();
-        VehiclePropValue result;
-        result.prop = propId;
-        result.floatValue = speed;
-        result.status = VehiclePropertyStatus::AVAILABLE;
-        return result;
-    }
-};
-```
-
-## 七、Vehicle HAL 的重要性
-
-| 维度 | 说明 |
+| 能力 | 作用 |
 |------|------|
-| 解耦 | CarService 与硬件解耦 |
-| 标准化 | AIDL 接口统一 |
-| 可替换 | 不同车用不同 HAL 实现 |
-| 版本化 | HAL 接口可独立演进 |
+| `getAllPropConfigs` | 上电时告诉 Java 层：我有哪些 prop、类型、area、权限、变化模式 |
+| `getValues` | 按请求读（14 上是带 callback 的异步批量读） |
+| `setValues` | 写 |
+| `subscribe` / `unsubscribe` | 按采样率或 on-change 推送 |
 
-## 八、调试 Vehicle HAL
+HIDL 2.0 那种「一个 `VehiclePropValue get(...)` 同步返回」不要当成 14 的现状。
+
+## 三、值怎么表示
+
+AIDL 的 `VehiclePropValue` 不再把 `prop` 和所有标量挤在一个 C 结构里那么随便。典型字段：
+
+- `timestamp`：HAL 侧单调时钟，App 用来丢乱序
+- `areaId`
+- `status`：`AVAILABLE` / `UNAVAILABLE` / `ERROR`
+- `value`：`int32Values` / `floatValues` / `int64Values` / `byteValues` / `stringValue`
+
+属性 ID 在请求对象里，不总是嵌在 value 结构中。Java 的 `CarPropertyValue` 是给 App 的包装，和 HAL 结构不是同一个类。
+
+`VehiclePropConfig` 决定：
+
+- 读写（`VehiclePropertyAccess`）
+- 变化模式（static / on-change / continuous）
+- 采样率范围
+- 每个 area 的 min/max
+- 读写各要什么权限字符串
+
+权限不是 Java 里写死一张巨大 switch 这么简单，配置可以从 HAL 带上来。
+
+## 四、订阅为什么比轮询重要
+
+连续量（车速）若 App 10ms 一次 `getProperty`，Binder 和 HAL 都会炸。正确路径：
+
+1. Java 服务根据 App 的 `registerCallback(rate)` 合并成对 HAL 的 `SubscribeOptions`
+2. HAL 在值变化或达到采样间隔时 `IVehicleCallback` 上报
+3. `CarPropertyService` 更新缓存，再回调各 App
+
+vendor 实现如果「订阅了却从不 callback」，上层就会一直看到旧缓存或 UNAVAILABLE。
+
+## 五、vendor 要实现什么
+
+参考实现：`hardware/interfaces/automotive/vehicle/aidl/impl/`（模拟器 fake 车也在这套思路上）。
+
+职责：
+
+1. 提供完整 `PropConfig` 列表（仿真器可以造一份；量产要对实车矩阵）
+2. `get/set` 转到你们的车身协议（CAN / SOME-IP / 私有 IPC）
+3. 按订阅表推送，注意线程和时钟
+4. 正确填 `status`：总线超时是 `UNAVAILABLE` 或 `ERROR`，不要静默填 0
+
+不要在 HAL 里做业务 UI 判断（「行驶中不许调空调」）。那是 UxRestrictions 和策略层的事；HAL 只保证信号真实。
+
+## 六、调试
 
 ```bash
-# 查看车辆属性列表
+# Java 车服务
 adb shell dumpsys car_service
 
-# 模拟车辆属性（测试用）
-adb shell cmd car_service inject-vhal-event VEHICLE_SPEED 30.5
+# AIDL VHAL 默认实例
+adb shell dumpsys android.hardware.automotive.vehicle.IVehicle/default
 ```
 
-**inject-vhal-event** 是调试利器，可以模拟车辆数据，无需真实硬件。
+模拟器没有真总线时，用 `car_service` 的 inject 类命令往属性灌值（具体子命令以 `dumpsys car_service --help` / `cmd car_service` 为准，分支之间名字会变）。
 
-## 九、总结
+## 七、总结
 
 | 要点 | 结论 |
 |------|------|
-| Vehicle HAL | 硬件抽象层，AIDL 接口 |
-| 核心结构 | VehiclePropValue |
-| 订阅机制 | subscribe + callback |
-| 调试 | inject-vhal-event 模拟 |
+| 契约 | AIDL `IVehicle`（14），不是 App 直连 CAN |
+| 配置 | `getAllPropConfigs` 决定能出现哪些 Property |
+| 热路径 | subscribe + callback |
+| 你改车 | 改 vendor HAL 和属性表 |
 
 ---
 
-**下一篇预告**：《车载蓝牙电话：HFP 协议》
-
-> 配套仓库：[AAOS-Guide](https://github.com/jason5200/AAOS-Guide)
+**下一篇**：[CarPropertyService 属性通路](../car-service/carproperty-source.md)

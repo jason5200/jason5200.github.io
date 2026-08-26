@@ -2,149 +2,112 @@
 
 > 系列：AAOS-Guide · 01-car-service
 > 难度：⭐⭐ 进阶
-> 更新：2026-08-16
-> 前置知识：《车载 Android 全景：AAOS 到底是什么》、Android 系统启动流程
+> 更新：2026-08-26
+> 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
+> 前置知识：[《中间件地图》](../00-overview/middleware.md)
 
 ---
 
-## 一、CarService 在系统里的位置
+## 一、它在哪一层
 
-在上一篇我们提到：AAOS 比手机 Android 多出来的核心，就是**汽车专属服务栈**，而这条栈的总入口就是 `CarService`。
-
-先定位它在源码里的位置：
+AAOS 比手机 AOSP 多出来的系统服务，入口是 **CarService**。源码主体：
 
 ```
-AOSP 源码路径：packages/services/Car/service/
+packages/services/Car/service/          # 服务实现（跑在 com.android.car）
+packages/services/Car/car-lib/          # android.car，给 App 用
+packages/services/Car/car-builtin-services/  # SystemServer 里的 Helper
 ```
 
-在系统启动流程中，`CarService` 的启动时机是这样的：
+启动关系：
 
 ```
-init 进程
-   │
-   ▼
-Zygote
-   │
-   ▼
-SystemServer（系统服务总进程）
-   │
-   ├── AMS / WMS / PMS ...      ← 手机 Android 就有的通用服务
-   │
-   └── CarServiceHelperService  ← AAOS 专属：负责拉起 CarService
-           │
-           ▼
-       CarService（独立进程 com.android.car）
-           │
-           ├── CarPropertyService     车辆属性
-           ├── CarPowerManagementService  电源管理
-           ├── CarHvacService         空调控制
-           ├── CarInfoService         车辆信息
-           ├── CarSensorService       传感器
-           └── ...                    更多子服务
+init → Zygote → system_server
+                    │
+                    └── CarServiceHelperService
+                              │ bindServiceAsUser
+                              ▼
+                    com.android.car（CarService）
+                              │
+                              └── ICarImpl
+                                    ├── Property / Power / Audio / UX …
+                                    └── VehicleStub → IVehicle
 ```
 
-**关键点**：`CarService` 不是跑在 `SystemServer` 进程里的，它是一个**独立的系统进程**（`com.android.car`），由 `CarServiceHelperService` 负责启动和保活。
+**CarService 不在 `system_server` 里。** 进程名是 `com.android.car`。Helper 只负责拉起、绑定、在它挂掉时再拉。
 
-## 二、为什么 CarService 要独立成进程
+## 二、为什么必须独立进程
 
-这是理解 AAOS 架构的一个关键问题。三个原因：
+1. **故障隔离**：VHAL 或某个车辆服务空指针，不应让 AMS/WMS 一起没。行驶中 `system_server` 重启比车载服务重启危险得多。
+2. **权限面**：碰车速、车门、空调的调用集中在一个 UID 空间，便于 `enforcePermission`。
+3. **生命周期**：可以单独 `kill` / 重启 `com.android.car`，不必重启整个 Android。
 
-1. **隔离故障**：车辆服务一旦崩溃，不能拖垮整个 SystemServer（否则手机式「系统重启」发生在行驶中的车上会很危险）。
-2. **权限边界清晰**：车辆硬件操作是高危动作，独立进程便于做权限与访问控制。
-3. **可独立重启**：`CarServiceHelperService` 可以单独拉起/重启 CarService，而不影响系统其他部分。
+## 三、客户端怎么找到它
 
-## 三、CarService 的分层结构
+App 不 bind 某个自定义 Action 去「找车」。标准路径：
 
-CarService 内部不是一坨代码，而是严格分层的：
-
-```mermaid
-graph TB
-    subgraph App层["App 层"]
-        A["车载应用（Launcher/地图/语音）"]
-    end
-    subgraph API层["Car API 层"]
-        B["android.car.*（CarPropertyManager 等）"]
-    end
-    subgraph Service层["CarService 层"]
-        C1["CarPropertyService"]
-        C2["CarPowerManagementService"]
-        C3["CarHvacService"]
-        C4["..."]
-    end
-    subgraph HAL层["Vehicle HAL 层"]
-        D["IVehicle / IVehicleCallback（AIDL）"]
-    end
-    subgraph 硬件层["硬件层"]
-        E["CAN 总线 / ECU / 传感器"]
-    end
-    A --> B --> Service层
-    Service层 --> D --> E
+```kotlin
+val car = Car.createCar(context) ?: return
+try {
+    val mgr = car.getCarManager(Car.PROPERTY_SERVICE) as CarPropertyManager
+    // ...
+} finally {
+    car.disconnect()
+}
 ```
 
-- **Car API**：App 侧，通过 `Car` 入口类拿到各种 Manager（如 `CarPropertyManager`）。
-- **CarService**：系统侧，实现这些 Manager 的逻辑。
-- **Vehicle HAL**：用 AIDL 定义的接口，是系统与车辆硬件的分界线。
+`Car.createCar` 内部连的是已经 `ServiceManager.addService("car_service", …)` 发布出去的 `ICar`。连失败时先看 CarService 有没有 `onCreate` 成功、VHAL 是否 ready（电源状态机会先 `WAIT_FOR_VHAL`）。
 
-## 四、核心子服务一览
+Android 10 之后也有带回调的重载，避免主线程死等。
 
-| 子服务 | 职责 | 对应的 App API |
-|--------|------|----------------|
-| `CarPropertyService` | 读写车辆属性（车速、续航、档位） | `CarPropertyManager` |
-| `CarPowerManagementService` | 车辆电源状态机（启动/熄火/休眠） | `CarPowerManager` |
-| `CarHvacService` | 空调控制 | `CarHvacManager` |
-| `CarInfoService` | 车辆静态信息（VIN、厂商、车型） | `CarInfoManager` |
-| `CarSensorService` | 车辆传感器数据 | `CarSensorManager` |
-| `CarAudioService` | 车载音频路由 | `CarAudioManager` |
-| `CarUxRestrictionsService` | 驾驶分心限制 | `CarUxRestrictionsManager` |
+## 四、ICarImpl 里都有什么
 
-> 这些子服务中，**CarPropertyService 是最基础、最常用的**，下一篇会专门讲它和 `CarPropertyManager`。
+`ICarImpl` 是 `ICar.Stub`，在 `CarService.onCreate()` 里创建并 `init()`。子服务按依赖初始化：先 Vehicle 通路，再 Property，再 Audio / Input 等。
 
-## 五、一个请求的完整链路
+对中间件开发，先认这几块：
 
-以「App 读取当前车速」为例，看一次完整调用：
+| 能力 | App 侧 Manager | 服务侧（概念） | 现状 |
+|------|----------------|----------------|------|
+| 车辆信号 | `CarPropertyManager` | `CarPropertyService` + Property HAL 封装 | **现行主干** |
+| 电源 | `CarPowerManager` | `CarPowerManagementService` | 现行 |
+| 音频 Zone / 音量组 | `CarAudioManager` | `CarAudioService` | 现行 |
+| 驾驶分心 | `CarUxRestrictionsManager` | `CarUxRestrictionsService` | 现行 |
+| 空调 / 信息 / 传感器 Manager | `CarHvacManager` 等 | 多半转到 Property | **已废弃**，不要在新代码用 |
+
+把 HVAC、VIN、车速理解成「不同的 Vehicle Property」，比记三个 Manager 更接近现在的 AOSP。
+
+## 五、一次读信号怎么走
+
+以车速为例（属性 ID 是 `VehiclePropertyIds.PERF_VEHICLE_SPEED`，不是已经不用的 Sensor 常量）：
 
 ```
-App 调用 CarPropertyManager.getIntProperty(VEHICLE_SPEED)
-        │
-        ▼
-Car API（android.car）通过 Binder 跨进程
-        │
-        ▼
-CarPropertyService.getIntProperty()
-        │
-        ▼
-Vehicle HAL（IVehicle.get(VehiclePropConfig)）
-        │
-        ▼
-HAL 实现读 CAN 总线 → 返回车速值
-        │
-        ▼（原路返回）
-App 拿到结果
+App  CarPropertyManager.getProperty(...)
+  → Binder  ICarProperty
+  → CarPropertyService：鉴权、查配置、必要时下 HAL
+  → VehicleStub / IVehicle.getValues（AIDL，Android 13+）
+  → vendor HAL：从网关或 MCU 取物理量
+  → 原路返回 CarPropertyValue（含 timestamp、status、areaId）
 ```
 
-**核心理解**：App 永远不直接碰硬件，每一层都有清晰的职责边界。这就是为什么你能在 App 里用一行代码读车速，而不用管底层 CAN 协议。
+订阅则是 `registerCallback` → 服务侧向 VHAL `subscribe` → `IVehicleCallback` 上报 → 再回调 App。不要在 UI 线程里同步死等 HAL。
 
-## 六、如何阅读 CarService 源码
+## 六、源码怎么啃（自上而下）
 
-给初读源码的人一条建议路径：
+1. `car-lib`：`Car.java`、`CarPropertyManager.java`、`VehiclePropertyIds.java`
+2. `CarService.java`、`ICarImpl.java`：服务怎么 init、怎么 addService
+3. `CarPropertyService` 以及它调用的 HAL 封装类
+4. `hardware/interfaces/automotive/vehicle/` 下 AIDL：`IVehicle`、`VehiclePropValue`、`VehicleProperty`
 
-1. **先看接口**：`packages/services/Car/car-lib` 下的 `Car.java`、`CarPropertyManager.java`，理解 App 视角的 API。
-2. **再看服务入口**：`packages/services/Car/service/src/com/android/car/CarService.java` 和 `ICarImpl.java`，看服务如何初始化。
-3. **深入一个子服务**：挑 `CarPropertyService` 读透一个（不要贪多），理解它如何封装 Vehicle HAL。
-4. **最后看 HAL 定义**：`hardware/interfaces/automotive/vehicle/` 下的 AIDL，理解系统与硬件的契约。
+HIDL `IVehicle@2.0` 的 `get()/set()` 只在旧分支上当历史看。本仓库默认 AIDL。
 
 ## 七、总结
 
 | 要点 | 结论 |
 |------|------|
-| CarService 是什么 | AAOS 汽车专属系统服务的总入口 |
-| 进程模型 | 独立进程 `com.android.car`，由 CarServiceHelperService 拉起 |
-| 分层 | Car API → CarService 子服务 → Vehicle HAL → 硬件 |
-| 最基础子服务 | CarPropertyService（车辆属性读写） |
-| 学习建议 | 从 App API 到服务到 HAL，自上而下读 |
+| 进程 | `com.android.car`，Helper 从 SystemServer bind |
+| 门面 | `Car` / `ICar` |
+| 信号主干 | Property，不是 Sensor/Hvac Manager |
+| 硬件边界 | 只有 VHAL 该懂总线 |
 
 ---
 
-**下一篇预告**：《CarPropertyManager：如何读写车辆属性》
-
-> 配套仓库：[AAOS-Guide](https://github.com/jason5200/AAOS-Guide) · 实战 Demo：[Car-Launcher-Demo](https://github.com/jason5200/Car-Launcher-Demo)
+**下一篇**：[CarService 启动流程](carservice-startup-source.md)

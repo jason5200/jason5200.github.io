@@ -9,7 +9,7 @@
 ---
 
 > **API 状态（先看这个）**  
-> `CarSensorManager` / `CarSensorService` 是旧接口。AAOS 现行做法是把车速、油量、档位等做成 **Vehicle Property**，用 `CarPropertyManager` 读写（见 [CarPropertyManager](../carservice-api/carproperty-manager.md)）。  
+> `CarSensorManager` / `CarSensorService` 是旧接口。AAOS 现行做法是把车速、油量、档位等做成 **Vehicle Property**，用 `CarPropertyManager` 读写（见 [carproperty-manager.md](../carservice-api/carproperty-manager.md)）。  
 > 下面保留旧 API 只为读历史代码和旧项目；**新代码不要再注册 `CarSensorManager`。**
 
 ## 一、车辆信号 vs 手机传感器
@@ -21,7 +21,7 @@
 - 胎压、温度
 - 档位、方向盘角度
 
-这些数据由 **CarSensorService** 管理，通过 Vehicle HAL 从车辆总线获取。
+这些数据在现行 AAOS 里是 **Vehicle Property**，由 CarPropertyService 经 VHAL 从总线来。下面的 Sensor API 只用于读旧工程。
 
 ## 二、CarSensorService 的职责
 
@@ -71,12 +71,14 @@ CarSensorManager.OnSensorChangedListener listener = new CarSensorManager.OnSenso
     }
 };
 
+// 注册监听，指定采样率
 sensorManager.registerListener(
     listener,
     CarSensorManager.SENSOR_TYPE_CAR_SPEED,
     CarSensorManager.SENSOR_RATE_NORMAL
 );
 
+// 不用时注销
 sensorManager.unregisterListener(listener);
 ```
 
@@ -133,4 +135,4 @@ propertyManager.registerCallback(callback,
 
 ---
 
-**下一篇**：[CarInfoService：车辆静态信息](car-info.md)
+**下一篇**：[车辆静态信息也走 Property](car-info.md)

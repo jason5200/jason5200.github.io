@@ -1,133 +1,88 @@
-# CarPowerManagementService：电源状态管理
+# CarPowerManagementService：上电、熄火准备、挂起
 
 > 系列：AAOS-Guide · 01-car-service
 > 难度：⭐⭐⭐⭐ 深入
-> 更新：2026-08-27
-> 前置知识：《CarService 架构》
+> 更新：2026-08-26
+> 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
+> 前置知识：[《CarService 启动流程》](../car-service/carservice-startup-source.md)
 
 ---
 
-## 一、为什么车载电源管理复杂
+车的电源不是「亮屏 / 息屏 / 关机」三档。VHAL 上报的 AP 电源状态，由 **CarPowerManagementService（CPMS）** 收成一条状态机，再通知特权监听者。普通应用往往 **没有** 这套 API；能做的是把状态写进自己的 `onPause`。
 
-手机的电源状态很简单：亮屏、息屏、关机。但车的电源状态复杂得多：
+`CarPowerManager` 在 14 上大量接口是 `@SystemApi`，需要 `android.car.permission` 里与关机流程相关的特权权限。
 
-- 停车但人在车里（空调、音乐要能开）
-- 行驶中（全功能）
-- 熄火锁车（大部分系统休眠，但防盗、远程控制要监听）
-- 深度休眠（省电，只保留极少数功能）
+## 一、为什么必须等 VHAL
 
-**CarPowerManagementService** 就是管理这些复杂电源状态的系统服务。
+开机后 CPMS 先进入 **`WAIT_FOR_VHAL`**：HAL 进程还没 ready，不能假定车速、档位、点火状态是真的。HAL 一旦活着，才迁到 **`ON`**。
 
-## 二、电源状态机
+这能解释：开机动画结束前 `Car.createCar` 成功了，但 `getProperty` 仍 `UNAVAILABLE`。
 
-```mermaid
-stateDiagram-v2
-    [*] --> WAIT_FOR_VHAL：启动
-    WAIT_FOR_VHAL --> ON：车辆上电
-    ON --> SHUTDOWN_PREPARE：熄火
-    SHUTDOWN_PREPARE --> SHUTDOWN：准备完成
-    SHUTDOWN --> [*]
-    ON --> SUSPEND：长时间停车
-    SUSPEND --> ON：用户回来
-```
+## 二、应用会听到的状态（14）
 
-## 三、核心状态
+常量在 `CarPowerManager`（数值以 car-lib 为准）：
 
-| 状态 | 说明 |
+| 状态 | 含义 |
 |------|------|
-| `ON` | 车辆正常上电，全功能 |
-| `SHUTDOWN_PREPARE` | 熄火准备，应用保存状态 |
-| `SHUTDOWN` | 系统关机 |
-| `SUSPEND` | 挂起/休眠，省电 |
+| `STATE_WAIT_FOR_VHAL` | 等车辆 HAL |
+| `STATE_ON` | 座舱可用 |
+| `STATE_PRE_SHUTDOWN_PREPARE` | 关机流程已请求，显示/音频可能仍在 |
+| `STATE_SHUTDOWN_PREPARE` | 准备熄火；可能跑 Garage Mode（闲时任务） |
+| `STATE_SHUTDOWN_ENTER` | 真正进入关机，做最后清理 |
+| `STATE_SUSPEND_ENTER` / `STATE_SUSPEND_EXIT` | 挂起（STR）进出 |
+| `STATE_HIBERNATION_ENTER` / `EXIT` | 休眠（如果产品开了） |
+| `STATE_SHUTDOWN_CANCELLED` | 用户又拧回来了，取消关机 |
 
-## 四、App 如何感知电源状态
+网上示意图里的单独 `STATE_SUSPEND`、`STATE_SHUTDOWN` 不要当 14 的 listener 常量抄。
+
+## 三、正确的「我写完了」方式
+
+**没有** `requestShutdownDelay(...)` 这种公开 API。特权监听者用 **带 completion 的 listener**：
 
 ```java
-CarPowerManager powerManager = car.getCarManager(Car.POWER_SERVICE);
-
-// 注册电源状态监听
-powerManager.setListener(listener);
-
-CarPowerManager.CarPowerStateListener listener = new CarPowerManager.CarPowerStateListener() {
-    @Override
-    public void onStateChanged(int state) {
-        switch (state) {
-            case CarPowerManager.STATE_ON:
-                // 上电，恢复功能
-                break;
-            case CarPowerManager.STATE_SHUTDOWN_PREPARE:
-                // 即将关机，保存数据
-                saveData();
-                break;
-            case CarPowerManager.STATE_SUSPEND:
-                // 休眠，释放资源
-                break;
+powerManager.setListenerWithCompletion(executor, (state, future) -> {
+    if (state == CarPowerManager.STATE_SHUTDOWN_PREPARE) {
+        persistSession();
+        if (future != null) {
+            future.complete(null); // 14 上多为 CompletableFuture<Void>
         }
+        return;
     }
-};
+    if (future != null) {
+        future.complete(null);
+    }
+});
 ```
 
-## 五、关机准备（Shutdown Prepare）
+要点：
 
-这是最关键的应用场景：熄火时，系统会给应用一个「准备时间」保存状态。
+- 不 `complete`，CPMS 会等到超时再往下走（超时可能很长，表现为「熄不了火」）。
+- `SHUTDOWN_PREPARE` 上官方文档对 **异步拖延更严**；能同步落盘就同步。允许异步 complete 的状态以你这版 javadoc 为准（常见是 `PRE_SHUTDOWN_PREPARE`、`SUSPEND_ENTER` 等）。
+- 更新的 AOSP 把 future 换成了 `CompletablePowerStateChangeFuture`，并带过期时间。**以你编译的 car-lib 为准。**
 
-```mermaid
-sequenceDiagram
-    participant V as 车辆
-    participant C as CarPowerManager
-    participant A as 应用
-    V->>C: 熄火信号
-    C->>A: 通知 SHUTDOWN_PREPARE
-    A->>A: 保存数据（倒计时内完成）
-    A->>C: 完成通知
-    C->>C: 所有应用准备好后关机
-```
+只有 `CarPowerStateListener`、没有 completion 的，适合「知道一声」；不要承担「必须写完闪存」的职责。
 
-**关键**：应用必须在限定时间内（通常几秒）完成保存，否则可能丢数据。
+## 四、和 VHAL 的关系
 
-## 六、应用如何请求延迟关机
+CPMS 会跟 Vehicle HAL 做电源握手（关机推迟、深度睡眠入口等）。Garage Mode 在 `SHUTDOWN_PREPARE` 窗口跑 JobScheduler 类任务（地图更新、日志上传）。产品关了 Garage Mode，这个窗口就短。
 
-如果应用正在做重要操作（如写文件），可以请求「延迟关机」：
+挂起（suspend-to-ram）时，Java 世界像暂停；远程唤醒由 SoC / VMCU 负责，不是普通 App 注册一个 Broadcast 就能接收 CAN 唤醒。
 
-```java
-// 请求延迟关机
-powerManager.requestShutdownDelay(CarPowerManager.SHUTDOWN_DELAY_MAX, timeUnit);
-```
+## 五、普通座舱 App 怎么做
 
-**注意**：延迟时间是有限的，滥用会被系统忽略。
+1. 不要假装能拦关机。
+2. 关键数据：`onPause` / `onStop` 就写，不要等电源回调。
+3. 若你是系统服务（蓝牙策略、音频），用 `setListenerWithCompletion`，并在每个带 future 的状态 **都 complete**，避免卡死状态机。
 
-## 七、SUSPEND（休眠）机制
-
-车长时间不启动，系统进入休眠省电：
-
-```mermaid
-flowchart TB
-    A["停车熄火"] --> B["进入 SUSPEND"]
-    B --> C["大部分系统休眠"]
-    C --> D["仅保留：防盗、远程唤醒"]
-    D --> E["用户回来 → 唤醒到 ON"]
-```
-
-## 八、开发最佳实践
-
-| 场景 | 建议 |
-|------|------|
-| 收到 SHUTDOWN_PREPARE | 立即保存关键数据 |
-| 需要时间保存 | 请求延迟关机 |
-| 收到 SUSPEND | 释放资源、停止耗电任务 |
-| 收到 ON | 恢复功能、刷新数据 |
-
-## 九、总结
+## 六、总结
 
 | 要点 | 结论 |
 |------|------|
-| 电源服务 | 管理复杂车载电源状态 |
-| 核心状态 | ON/SHUTDOWN_PREPARE/SHUTDOWN/SUSPEND |
-| App 监听 | setListener + 状态回调 |
-| 关键场景 | 关机前保存数据 |
+| 先 VHAL 后 ON | `WAIT_FOR_VHAL` |
+| 熄火窗口 | `SHUTDOWN_PREPARE` → `SHUTDOWN_ENTER` |
+| 完成通知 | completion future，不是 delay API |
+| 听众 | 系统 / 特权服务为主 |
 
 ---
 
-**下一篇预告**：《CarHvacService：空调控制深入》
-
-> 配套仓库：[AAOS-Guide](https://github.com/jason5200/AAOS-Guide)
+**下一篇**：[CarAudioService](car-audio-service.md)

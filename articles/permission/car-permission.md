@@ -1,160 +1,111 @@
-# CarService 权限模型：系统权限与驾驶分心
+# 权限与驾驶分心：谁能碰车、行驶中 UI 怎么收
 
 > 系列：AAOS-Guide · 08-permission
-> 难度：⭐⭐⭐⭐ 深入
+> 难度：⭐⭐⭐ 进阶
 > 更新：2026-08-26
-> 前置知识：《CarService 架构》《CarPropertyManager》
+> 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
+> 前置知识：[《CarPropertyManager》](../carservice-api/carproperty-manager.md)
 
 ---
 
-## 一、车载权限为什么比手机更严格
+车载权限要同时管两件事：**谁能碰哪条车辆信号**，以及 **行驶中屏幕还许干什么**。前者是 `android.car.permission.*` + 属性 config；后者是 `CarUxRestrictionsManager`，不是同一套 API。
 
-手机权限主要保护「用户隐私」。而车载权限多了一层更重要的考虑——**行车安全**：
+## 一、权限从哪来
 
-- 行驶中能操作空调吗？可以，但要简单。
-- 行驶中能看视频吗？绝对不能。
-- 谁能控制车窗、车锁？必须严格授权。
+读/写某个 Vehicle Property 时，CarPropertyService 用 **该属性配置上的权限字符串** 做 `enforcePermission`。字符串在 HAL `VehiclePropConfig` 里，和 `VehiclePropertyIds` 一起对照。
 
-所以 CarService 的权限模型，同时考虑**隐私 + 安全**两个维度。
-
-## 二、CarService 的权限体系
-
-```mermaid
-flowchart TB
-    A["权限申请"] --> B{"权限类型"}
-    B -->|"危险权限"| C["运行时授权（用户确认）"]
-    B -->|"签名权限"| D["系统签名才能授予"]
-    B -->|"特权权限"| E["priv-app 才有"]
-    B -->|"驾驶分心"| F["行驶中动态限制"]
-```
-
-## 三、汽车专属权限
-
-AAOS 定义了一批汽车专属权限（`android.car.permission.*`）：
-
-| 权限 | 用途 | 级别 |
-|------|------|------|
-| `CAR_SPEED` | 读取车速 | 危险权限 |
-| `CONTROL_CAR_CLIMATE` | 控制空调 | 特权权限 |
-| `READ_CAR_MILEAGE` | 读里程 | 特权权限 |
-| `CONTROL_CAR_DOORS` | 控制车门 | 签名权限 |
-| `CAR_DRIVING_STATE` | 读驾驶状态 | 特权权限 |
-
-**关键理解**：
-- 读车速这种「读数据」的，多是危险权限（运行时授权）。
-- 控制车门、车窗这种「控硬件」的，多是签名/特权权限（只有系统 App 或车企 App 才有）。
-
-## 四、权限声明方式
-
-在 `AndroidManifest.xml` 中声明：
+App 侧仍然要在 Manifest 声明，例如：
 
 ```xml
 <uses-permission android:name="android.car.permission.CAR_SPEED" />
-<uses-permission android:name="android.car.permission.CONTROL_CAR_CLIMATE" />
 ```
 
-**注意**：声明了不等于有权限，还要看权限级别：
+`car-lib` 里对应常量是 `Car.PERMISSION_SPEED` 这类，值就是上面那串。
 
-1. **危险权限**：运行时弹窗，用户同意才生效。
-2. **特权权限**：App 必须装在 `priv-app` 目录（系统预装），且权限声明在 `privapp-permissions` 白名单里。
-3. **签名权限**：App 必须用系统签名（platform key）签名。
+## 二、级别：声明了不等于能用
 
-## 五、驾驶分心限制（Driver Distraction）
+| 级别 | 典型能力 | 怎么才能有 |
+|------|----------|------------|
+| normal / dangerous | 读部分状态（如车速） | dangerous 要运行时授权；车企仍可策略拦截 |
+| signature | 和平台同签名 | platform key |
+| signature\|privileged | 多数「控车」 | 同签名 **或** priv-app + `privapp-permissions-*.xml` 白名单 |
 
-这是车载独有的、最体现「安全优先」的机制。系统根据驾驶状态，动态限制 UI 操作。
+经验上：
 
-```mermaid
-flowchart TB
-    A["车辆状态"] --> B{"是否行驶中？"}
-    B -->|"停车"| C["无限制"]
-    B -->|"行驶中"| D["应用分心等级"]
-    D --> E["限制：禁视频/禁键盘/禁长文本"]
+- `CAR_SPEED`：读 `PERF_VEHICLE_SPEED`，多为危险权限
+- `CONTROL_CAR_CLIMATE`：写 HVAC 设定，特权
+- 门 / 窗 / 座椅运动：签名或特权，普通商店应用不要指望
+
+第三方 App `requestPermissions(CONTROL_CAR_CLIMATE)` **不会**变成系统应用。调试控车请用 priv-app 或系统签名包。
+
+## 三、和属性绑定，不要背一张总表
+
+同一 `propId` 读和写可以要不同权限。config 里没有的属性，不是缺权限，是 HAL 没实现。
+
+`dumpsys car_service` 能看到属性列表和权限；对不上时先对 HAL，再对 Manifest。
+
+## 四、驾驶分心是另一条链
+
+```
+驾驶状态 / 车速等
+    → CarUxRestrictionsService（可配置 XML）
+    → CarUxRestrictions
+    → App：收视频、禁键盘、限字数
 ```
 
-### 分心等级
-
-| 等级 | 限制 |
-|------|------|
-| 无限制 | 停车状态 |
-| 轻度 | 行驶中：禁视频、禁手动输入 |
-| 重度 | 紧急情况：最小化交互 |
-
-### App 如何查询分心状态
-
-```java
-CarUxRestrictionsManager manager = car.getCarManager(
-    Car.CAR_UX_RESTRICTION_SERVICE);
-
-CarUxRestrictions restrictions = manager.getCurrentCarUxRestrictions();
-if (restrictions.isRequiresDistractionOptimization()) {
-    // 当前处于行驶中，需要做分心优化
-    // 比如：隐藏视频播放按钮、禁用文字输入
-}
-```
-
-### 监听分心状态变化
-
-```java
-manager.registerListener(listener);
-// 当「停车 → 行驶」或「行驶 → 停车」时，会回调
-CarUxRestrictionsManager.OnUxRestrictionsChangedListener listener =
-    restrictions -> {
-        if (restrictions.isRequiresDistractionOptimization()) {
-            // 进入驾驶状态，简化 UI
-            hideVideoButton();
-            disableTextInput();
-        } else {
-            // 停车了，恢复完整 UI
-            showVideoButton();
-        }
-    };
-```
-
-## 六、一个完整的权限 + 分心示例
-
-开发一个「空调控制 App」：
+查询：
 
 ```kotlin
-// 1. 检查权限
-if (checkSelfPermission(Car.PERMISSION_CONTROL_CAR_CLIMATE)
-    != PackageManager.PERMISSION_GRANTED) {
-    requestPermissions(arrayOf(Car.PERMISSION_CONTROL_CAR_CLIMATE), 1)
+val ux = car.getCarManager(Car.CAR_UX_RESTRICTION_SERVICE) as CarUxRestrictionsManager
+val r = ux.currentCarUxRestrictions
+if (r.isRequiresDistractionOptimization) {
+    val flags = r.activeRestrictions
+    val noVideo = flags and CarUxRestrictions.UX_RESTRICTIONS_NO_VIDEO != 0
+    val noText = flags and CarUxRestrictions.UX_RESTRICTIONS_NO_TEXT_ENTRY != 0
+    // 还有 LIMIT_STRING_LENGTH 等，用 getMaxRestrictedStringLength()
 }
-
-// 2. 检查驾驶分心状态
-val uxRestrictions = carUxRestrictionsManager.currentCarUxRestrictions
-if (uxRestrictions.isRequiresDistractionOptimization) {
-    // 行驶中：只显示「温度 +/-」大按钮
-    showSimpleClimateUI()
-} else {
-    // 停车中：显示完整空调面板
-    showFullClimateUI()
-}
-
-// 3. 执行操作
-carHvacManager.setIntProperty(HVAC_TEMPERATURE_SET, 0, 24)
 ```
 
-## 七、权限相关的常见坑
+`isNoVideo()` 这类快捷方法不要当 14 的公开 API 来抄。用 **bitmask**。
 
-| 坑 | 建议 |
+监听停车 ↔ 行驶，必须 `registerListener`，页面销毁 `unregisterListener`。只在 `onCreate` 读一次，驶出地库 UI 不会收。
+
+## 五、空调示例：权限 + Property + UX
+
+不要再用 `CarHvacManager`。
+
+```kotlin
+if (checkSelfPermission(Car.PERMISSION_CONTROL_CAR_CLIMATE)
+    != PackageManager.PERMISSION_GRANTED) {
+    // 特权权限：这里弹窗没有用，检查 priv-app / 签名
+}
+
+val restrictions = ux.currentCarUxRestrictions
+if (restrictions.isRequiresDistractionOptimization) {
+    showSimpleClimateUi()  // 大步进 +/- ，不要复杂风口图
+} else {
+    showFullClimateUi()
+}
+
+propertyManager.setProperty(
+    java.lang.Float::class.java,
+    VehiclePropertyIds.HVAC_TEMPERATURE_SET,
+    driverAreaId,   // 来自 config.getAreaIds()，不是写死 0/1/2
+    22.5f
+)
+```
+
+## 六、坑
+
+| 坑 | 处理 |
 |----|------|
-| 声明了权限却用不了 | 检查权限级别（特权/签名权限需系统配置） |
-| 特权权限不生效 | 确认 App 在 priv-app + 白名单声明 |
-| 行驶中 UI 被限制 | 监听 UxRestrictions 动态适配 |
-| 忽略驾驶分心 | 可能被车企拒绝上架 |
+| 声明了气候权限仍然 SecurityException | 不是 dangerous，要 priv-app 白名单 |
+| 模拟器能写、量产不能 | 量产 HAL 写权限更严，或根本不可写 |
+| 只做权限、不做 UX | 车企审核 / 合规过不了 |
+| UX 和权限混成一个 Manager | Property 管信号，UxRestrictions 管 UI |
 
-## 八、总结
-
-| 要点 | 结论 |
-|------|------|
-| 权限双维度 | 隐私 + 行车安全 |
-| 权限级别 | 危险/特权/签名三级 |
-| 驾驶分心 | 行驶中动态限制 UI |
-| 开发要点 | 声明权限 + 监听分心状态 |
+更细的 UI 适配见 [CarUxRestrictions](../audio/car-ux.md)。
 
 ---
 
-**下一篇预告**：《AI 上车：车载 RAG 实战》
-
-> 配套仓库：[AAOS-Guide](https://github.com/jason5200/AAOS-Guide)
+**下一篇**：[CarPowerManagementService](../audio/car-power.md)

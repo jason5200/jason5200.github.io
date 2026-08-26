@@ -5,7 +5,7 @@
 > 更新：2026-08-27
 > 前置知识：《车机多屏显示》
 >
-> 车速等信号请用 `CarPropertyManager`。下文 `CarSensorManager` 仅作旧代码对照。
+> 车速等信号请用 `CarPropertyManager`。
 
 ---
 
@@ -74,19 +74,22 @@ startActivity(intent, options.toBundle())
 
 ## 五、Cluster 的数据实时更新
 
-仪表盘数据（车速、转速）变化快，用监听机制：
+仪表盘数据（车速、转速）变化快，用 `CarPropertyManager.registerCallback`：
 
 ```kotlin
-// 监听车速变化
-carSensorManager.registerListener(
-    { event ->
-        if (event.sensorType == CarSensorManager.SENSOR_TYPE_CAR_SPEED) {
-            val speed = event.floatValues[0]
-            clusterPresentation.updateSpeed(speed)
+propertyManager.registerCallback(
+    object : CarPropertyManager.CarPropertyEventCallback {
+        override fun onChangeEvent(value: CarPropertyValue<*>) {
+            if (value.propertyId == VehiclePropertyIds.PERF_VEHICLE_SPEED
+                && value.status == CarPropertyValue.STATUS_AVAILABLE) {
+                val mps = value.value as Float
+                clusterPresentation.updateSpeed(mps * 3.6f)
+            }
         }
+        override fun onErrorEvent(propId: Int, areaId: Int) {}
     },
-    CarSensorManager.SENSOR_TYPE_CAR_SPEED,
-    CarSensorManager.SENSOR_RATE_FASTEST
+    VehiclePropertyIds.PERF_VEHICLE_SPEED,
+    CarPropertyManager.SENSOR_RATE_UI
 )
 ```
 
@@ -94,11 +97,11 @@ carSensorManager.registerListener(
 
 | 信息 | 数据来源 |
 |------|----------|
-| 车速 | CarSensorService |
-| 转速 | CarSensorService |
-| 油量/电量 | CarPropertyManager |
+| 车速 | `PERF_VEHICLE_SPEED`（Property） |
+| 转速 | `ENGINE_RPM`（Property，有发动机才有） |
+| 油量/电量 | `FUEL_LEVEL` / `EV_BATTERY_LEVEL` |
 | 导航指引 | 导航应用 |
-| 警示灯 | 车辆诊断 |
+| 警示灯 | 诊断相关 Property / 车身信号 |
 
 ## 七、Cluster 与中控屏的联动
 

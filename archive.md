@@ -1,14 +1,15 @@
 # 文章归档
 
-> 按系列归档，共 **117 篇**。车载主线 28 篇，Framework 48 篇，AI（含选读）41 篇。
+> 按系列归档，共 **118 篇**。车载主线 29 篇，Framework 48 篇，AI（含选读）41 篇。
 
 ---
 
-## 车载 Android（AAOS）· 28 篇
+## 车载 Android（AAOS）· 29 篇
 
 | 文章 |
 |------|
 | [车载 Android 全景：AAOS 到底是什么](articles/00-overview/aaos-intro.md) |
+| [车载中间件地图](articles/00-overview/middleware.md) |
 | [CarService 架构](articles/car-service/carservice-architecture.md) |
 | [CarService 启动流程源码](articles/car-service/carservice-startup-source.md) |
 | [CarPropertyManager：读写车辆属性](articles/carservice-api/carproperty-manager.md) |

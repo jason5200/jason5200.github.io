@@ -1,149 +1,89 @@
-# CarHvacService：空调控制深入
+# 空调控制：用 Property，不要再用 CarHvacManager
 
 > 系列：AAOS-Guide · 01-car-service
-> 难度：⭐⭐⭐⭐ 深入
-> 更新：2026-08-27
-> 前置知识：《CarService 架构》《CarPropertyManager》
+> 难度：⭐⭐⭐ 进阶
+> 更新：2026-08-26
+> 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
+> 前置知识：[《CarPropertyManager》](../carservice-api/carproperty-manager.md)
 
 ---
 
-## 一、HVAC 是什么
+> **API 状态**  
+> `CarHvacManager` / `Car.HVAC_SERVICE` 已废弃。空调是一组 **Vehicle Property**，读写走 `CarPropertyManager`。服务进程里也没有一条独立于 Property 的「空调总线」。
 
-**HVAC（Heating, Ventilation, Air Conditioning）**：采暖、通风、空调。是车机里最复杂的控制功能之一。
+HVAC（采暖 / 通风 / 空调）在座舱里控件多，但中间件模型很简单：每个开关、设定值一个 `propId`，分区用 `areaId`。
 
-一个完整的车载空调系统涉及：
+## 一、常用属性（14）
 
-- 温度（主驾/副驾分区）
-- 风速、风向
-- 内外循环
-- 除霜、座椅加热、方向盘加热
-- 前后排分区控制
+| 常量 | 类型 | 含义 |
+|------|------|------|
+| `HVAC_TEMPERATURE_SET` | Float，°C | 设定温度 |
+| `HVAC_TEMPERATURE_CURRENT` | Float，°C | 实测温度（不是 `HVAC_TEMPERATURE_VALUE`） |
+| `HVAC_FAN_SPEED` | Int | 风速档 |
+| `HVAC_FAN_DIRECTION` | Int | 吹脚 / 吹脸等 |
+| `HVAC_AC_ON` | Boolean | 压缩机请求 |
+| `HVAC_RECIRC_ON` | Boolean | 内循环 |
+| `HVAC_POWER_ON` | Boolean | 空调系统电源 |
+| `HVAC_TEMPERATURE_DISPLAY_UNITS` | Int | 界面用 °C / °F，设定值仍以 HAL 单位为准 |
 
-## 二、CarHvacService 的职责
+写设定需要 `android.car.permission.CONTROL_CAR_CLIMATE`（特权级）。行驶中 UI 还要听 [UxRestrictions](car-ux.md)。
 
-CarHvacService 是 CarService 的子服务，负责把「空调相关的车辆属性」暴露给应用。
+## 二、areaId 不是 0=主驾、1=副驾
 
-```mermaid
-flowchart TB
-    A["空调应用"] --> B["CarHvacManager"]
-    B --> C["CarHvacService"]
-    C --> D["Vehicle HAL"]
-    D --> E["空调硬件"]
-```
+HVAC 属性的 VehicleArea 是 **SEAT**。`areaId` 是 `VehicleAreaSeat` 的 **bit 组合**，由 **这台车的 HAL config** 决定，例如：
 
-## 三、通过 CarHvacManager 控制空调
+- 主驾：`VehicleAreaSeat.SEAT_ROW_1_LEFT`（左舵）
+- 副驾：`SEAT_ROW_1_RIGHT`
+- 双区绑在一起：`LEFT | RIGHT` 作为一个 areaId
 
-```java
-CarHvacManager hvacManager = car.getCarManager(Car.HVAC_SERVICE);
-
-// 设置主驾温度
-hvacManager.setIntProperty(
-    VehiclePropertyIds.HVAC_TEMPERATURE_SET,
-    0,      // areaId = 0 表示主驾
-    24      // 24 度
-);
-
-// 设置风速
-hvacManager.setIntProperty(
-    VehiclePropertyIds.HVAC_FAN_SPEED,
-    0,
-    3       // 3 档风
-);
-```
-
-## 四、空调相关的车辆属性
-
-| 属性 | 说明 |
-|------|------|
-| `HVAC_TEMPERATURE_SET` | 设定温度 |
-| `HVAC_TEMPERATURE_VALUE` | 实际温度 |
-| `HVAC_FAN_SPEED` | 风速 |
-| `HVAC_FAN_DIRECTION` | 风向 |
-| `HVAC_AC_ON` | 空调开关 |
-| `HVAC_RECIRC_ON` | 内外循环 |
-
-## 五、多区空调（areaId）
-
-车载空调通常分区，`areaId` 指定控制哪个区：
-
-| areaId | 区域 |
-|--------|------|
-| 0 | 主驾 |
-| 1 | 副驾 |
-| 2+ | 后排 |
-
-```java
-// 副驾温度设为 26 度（areaId = 1）
-hvacManager.setIntProperty(
-    VehiclePropertyIds.HVAC_TEMPERATURE_SET,
-    1,      // 副驾区
-    26
-);
-```
-
-## 六、一个完整的空调控制示例
+**不要写死 0、1、2。** 正确做法：
 
 ```kotlin
-class ClimateControlActivity : AppCompatActivity() {
-    private lateinit var hvacManager: CarHvacManager
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val car = Car.createCar(this)
-        hvacManager = car.getCarManager(Car.HVAC_SERVICE) as CarHvacManager
-    }
-
-    fun setDriverTemp(temp: Int) {
-        // 主驾温度
-        hvacManager.setIntProperty(
-            VehiclePropertyIds.HVAC_TEMPERATURE_SET, 0, temp)
-    }
-
-    fun setFanSpeed(speed: Int) {
-        // 风速
-        hvacManager.setIntProperty(
-            VehiclePropertyIds.HVAC_FAN_SPEED, 0, speed)
-    }
-
-    fun toggleAC(on: Boolean) {
-        // 空调开关
-        hvacManager.setBooleanProperty(
-            VehiclePropertyIds.HVAC_AC_ON, 0, on)
-    }
-}
+val cfg = propertyManager.getCarPropertyConfig(VehiclePropertyIds.HVAC_TEMPERATURE_SET)
+val areaIds = cfg?.areaIds ?: intArrayOf()
+// 用 areaIds[i] 去 set/get
 ```
 
-## 七、温度单位的坑
+全局属性才用 `areaId = 0`。把主驾温度 set 到 0，在分区车上经常直接失败。
 
-车辆属性的温度单位可能是**摄氏度或华氏度**，取决于车辆配置。读取前要确认：
+## 三、读写示例
 
-```java
-// 查询温度单位
-int unit = hvacManager.getIntProperty(
-    VehiclePropertyIds.HVAC_TEMPERATURE_DISPLAY_UNITS, 0);
-// 0 = 摄氏度，1 = 华氏度
+```kotlin
+val pm = car.getCarManager(Car.PROPERTY_SERVICE) as CarPropertyManager
+val area = areaIds.first() // 先 dump 再选主驾 bit
+
+pm.setProperty(
+    java.lang.Float::class.java,
+    VehiclePropertyIds.HVAC_TEMPERATURE_SET,
+    area,
+    22.5f
+)
+
+val set = pm.getProperty(
+    java.lang.Float::class.java,
+    VehiclePropertyIds.HVAC_TEMPERATURE_SET,
+    area
+)
 ```
 
-## 八、常见坑
+风速是 Int：`getProperty(Integer::class.java, HVAC_FAN_SPEED, area)`。不要对 Float 属性调 `setIntProperty`。
 
-| 坑 | 说明 |
-|----|------|
-| areaId 写错 | 控制错区域 |
-| 温度单位混淆 | 摄氏/华氏搞混 |
-| 忽略权限 | 需要 CONTROL_CAR_CLIMATE 权限 |
-| 行驶中复杂操作 | 考虑驾驶分心限制 |
+订阅设定变化用 `CarPropertyEventCallback` + `SENSOR_RATE_ONCHANGE`，和车速那套一样。
 
-## 九、总结
+## 四、单位
 
-| 要点 | 结论 |
-|------|------|
-| HVAC | 采暖通风空调 |
-| 控制入口 | CarHvacManager |
-| 多区控制 | areaId 指定区域 |
-| 注意 | 温度单位、权限、分心 |
+`HVAC_TEMPERATURE_SET` 在 VHAL 文档里单位是 **摄氏**。显示华氏只影响 UI。`HVAC_TEMPERATURE_DISPLAY_UNITS` 用来同步界面单位，不要把设定值按华氏写进 SET。
+
+## 五、和旧 CarHvacManager 的对照
+
+| 旧写法 | 现在 |
+|--------|------|
+| `car.getCarManager(Car.HVAC_SERVICE)` | `Car.PROPERTY_SERVICE` |
+| `setIntProperty(HVAC_TEMPERATURE_SET, 0, 24)` | `setProperty(Float.class, …, 22.5f)` + 真 areaId |
+| 独立 CarHvacService | PropertyHalService |
+
+读历史代码时看到 HvacManager，把它翻译成 Property 即可。
 
 ---
 
-**下一篇预告**：《CarSensorService：车辆传感器数据》
-
-> 配套仓库：[AAOS-Guide](https://github.com/jason5200/AAOS-Guide)
+**下一篇**：[车辆信息也走 Property](car-info.md)

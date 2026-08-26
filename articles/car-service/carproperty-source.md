@@ -1,156 +1,122 @@
-# CarPropertyService 属性读写源码
+# CarPropertyService：鉴权、配置、再下 HAL
 
 > 系列：AAOS-Guide · 01-car-service
-> 难度：⭐⭐⭐⭐⭐ 深入
-> 更新：2026-08-27
-> 前置知识：《CarPropertyManager》《Vehicle HAL 深入》
+> 难度：⭐⭐⭐⭐ 深入
+> 更新：2026-08-26
+> 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
+> 前置知识：[《CarPropertyManager》](../carservice-api/carproperty-manager.md)、[《Vehicle HAL》](../permission/vehicle-hal.md)
 
 ---
 
-## 一、本文目标
+App 里一次 `getProperty` / `registerCallback`，真正干活的是 **CarPropertyService**。它不解析 CAN，也不在 Java 里用巨型 `switch (propId)` 写死权限。
 
-前面讲了 CarPropertyManager 的用法，这一篇深入到 **CarPropertyService** 源码，看一次「读车速」从 App 到 Vehicle HAL 的完整代码链。
+下面是结构说明，不是 14 某次提交的逐行摘录。
 
-## 二、读写属性的完整链路
+## 一、中间这一跳
 
-```mermaid
-flowchart TB
-    A["App：CarPropertyManager.getProperty"] --> B["CarPropertyService"]
-    B --> C["Vehicle HAL"]
-    C --> D["CAN 总线"]
+```
+CarPropertyManager
+    │ Binder（ICarProperty）
+    ▼
+CarPropertyService
+    │ 查 CarPropertyConfig：类型 / area / 读写 / 权限字符串
+    ▼
+PropertyHalService（HAL 封装）
+    │ getValues / setValues / subscribe
+    ▼
+VehicleStub → IVehicle（AIDL）
+    ▼
+vendor HAL
 ```
 
-## 三、App 侧：CarPropertyManager
+`VehicleHal.get(VehiclePropValue)` 那种 HIDL 同步接口，不要当成 14 的热路径。
+
+## 二、配置从哪来
+
+服务 init 时向 VHAL 要 **全部属性配置**（`getAllPropConfigs`），做成 `propId → CarPropertyConfig`：
+
+- 数据类型（int / float / string / bytes）
+- `areaId` 列表（全局属性通常只有 `0`）
+- access：只读 / 只写 / 读写
+- change mode：static / on-change / continuous
+- 采样率上下限
+- **读权限、写权限字符串**（来自 HAL config，不是 Java 一张死表）
+
+所以「模拟器能读车速、量产包读不了」——先 dump 两边的 config，不要先改 App。
+
+## 三、读：先鉴权，再决定打不打 HAL
+
+伪代码（逻辑，不是源码）：
 
 ```java
-// CarPropertyManager.java
-public CarPropertyValue getProperty(int propId, int areaId) {
-    // 通过 Binder 调用 CarPropertyService
-    return mCarPropertyService.getProperty(propId, areaId);
+CarPropertyValue getProperty(int propId, int areaId) {
+    CarPropertyConfig cfg = configs.get(propId);
+    if (cfg == null) throw new IllegalArgumentException("unsupported prop");
+
+    enforcePermission(cfg.getReadPermission()); // 例如 android.car.permission.CAR_SPEED
+    assertAreaId(cfg, areaId);
+    assertReadable(cfg);
+
+    // 已订阅的连续量往往有缓存；静态量 / 未订阅可能下 HAL
+    return propertyHal.get(propId, areaId);
 }
 ```
 
-## 四、CarPropertyService 侧
+注意：
+
+- 属性 ID 是 `VehiclePropertyIds.PERF_VEHICLE_SPEED`，没有 `VEHICLE_SPEED` 这种现行常量。
+- 客户端 `getProperty(Class<E>, propId, areaId)` 的 `Class` 必须和 config 一致。
+- 返回的是 `CarPropertyValue`，带 `status` 和 `timestamp`。缓存命中也要看 status，总线掉了应是 `UNAVAILABLE`，不是假 0。
+
+## 四、写：同样走 config
+
+写比读多两道闸：`isWritable()`、值是否在 min/max（HVAC 温度尤其容易越界被 HAL 拒）。
+
+14 的 HAL 写是批量异步 `setValues` + callback 报错。服务要把 HAL 的错误码转成 App 能理解的 `onErrorEvent` 或异常。不要假设 `setProperty` 返回了就等于风门已经转到位。
+
+## 五、订阅：合并采样率，再跟 HAL 订一份
+
+多个 App 以 1 Hz / 5 Hz / 10 Hz 订同一车速时，服务会 **合并成对 HAL 的一次 subscribe**（取更严的速率），再 fan-out 给各 `CarPropertyEventCallback`。
+
+```
+App registerCallback(rate)
+  → CarPropertyService 更新订阅表
+  → PropertyHalService.subscribe(options)
+  → IVehicleCallback / ISubscriptionCallback 上报
+  → 更新缓存
+  → 回调各 App（注意切线程，不要在 Binder 线程刷 UI）
+```
+
+没有人订了，就该 unsubscribe，否则 HAL 会一直采车速。
+
+## 六、权限不是 switch(propId)
+
+旧博客常写成：
 
 ```java
-// CarPropertyService.java
-public CarPropertyValue getProperty(int propId, int areaId) {
-    // 1. 校验权限
-    assertPermission(propId);
-
-    // 2. 查缓存（如果有）
-    CarPropertyValue cached = mCachedValues.get(propId);
-    if (cached != null) {
-        return cached;
-    }
-
-    // 3. 通过 Vehicle HAL 读
-    VehiclePropValue value = mVehicleHal.get(...);
-    return new CarPropertyValue(value);
+switch (propId) {
+    case VehiclePropertyIds.VEHICLE_SPEED:
+        return Car.PERMISSION_SPEED;
 }
 ```
 
-## 五、权限校验
+14 上更接近：每个 `VehiclePropConfig` 带 `readPermission` / `writePermission`。Java 只做 `enforceCallingOrSelfPermission`。vendor 乱填权限字符串，App 就会对不上 Manifest。
 
-```java
-private void assertPermission(int propId) {
-    // 根据属性类型确定需要的权限
-    String permission = getPermissionForProperty(propId);
-    if (permission != null) {
-        mContext.enforceCallingOrSelfPermission(permission, ...);
-    }
-}
+控车（门、窗、空调设定）多为 `signature|privileged`。读车速 `CAR_SPEED` 一般是 dangerous，第三方仍可能被车企策略拦。
 
-private String getPermissionForProperty(int propId) {
-    switch (propId) {
-        case VehiclePropertyIds.VEHICLE_SPEED:
-            return Car.PERMISSION_SPEED;  // 需要车速权限
-        case VehiclePropertyIds.HVAC_TEMPERATURE_SET:
-            return Car.PERMISSION_CONTROL_CAR_CLIMATE;  // 空调权限
-        // ...
-    }
-}
-```
+## 七、和启动、电源的关系
 
-## 六、VehicleHal 的 get 实现
+CarPropertyService 依赖 Vehicle 通路已经 `getAllPropConfigs` 成功。电源服务在 `WAIT_FOR_VHAL` 时，属性往往还不可用。调试「开机后前几秒 getProperty 失败」，先看电源状态，再看 HAL。
 
-```java
-// VehicleHal.java
-public VehiclePropValue get(VehiclePropValue request) {
-    // 通过 AIDL 调用 HAL 实现
-    return mVehicle.get(request);
-}
-```
-
-## 七、属性缓存的优化
-
-CarPropertyService 会缓存属性值，避免频繁读 HAL：
-
-```java
-// 缓存结构
-private final SparseArray<CarPropertyValue> mCachedValues = new SparseArray<>();
-
-// 订阅属性变化，更新缓存
-private final IVehicleCallback mVehicleCallback = new IVehicleCallback.Stub() {
-    @Override
-    public void onPropertyEvent(List<VehiclePropValue> values) {
-        for (VehiclePropValue value : values) {
-            // 更新缓存
-            mCachedValues.put(value.prop, new CarPropertyValue(value));
-        }
-    }
-};
-```
-
-**关键理解**：CarPropertyService 通过「订阅」机制实时更新缓存，App 读属性时优先从缓存拿，减少 HAL 调用。
-
-## 八、写属性的流程
-
-```java
-// CarPropertyService.java
-public void setProperty(int propId, int areaId, Object value) {
-    // 1. 校验权限
-    assertPermission(propId);
-
-    // 2. 构造 VehiclePropValue
-    VehiclePropValue propValue = new VehiclePropValue();
-    propValue.prop = propId;
-    propValue.areaId = areaId;
-    propValue.value = value;
-
-    // 3. 通过 Vehicle HAL 写
-    mVehicleHal.set(propValue);
-}
-```
-
-## 九、完整的读写时序
-
-```mermaid
-sequenceDiagram
-    participant A as App
-    participant C as CarPropertyService
-    participant H as VehicleHal
-    participant V as HAL实现
-    A->>C: getProperty(VEHICLE_SPEED)
-    C->>C: 校验权限 + 查缓存
-    C->>H: get（缓存未命中）
-    H->>V: IVehicle.get（AIDL）
-    V-->>H: 车速值
-    H-->>C: VehiclePropValue
-    C-->>A: CarPropertyValue
-```
-
-## 十、总结
+## 八、总结
 
 | 要点 | 结论 |
 |------|------|
-| 读链路 | App → Service → HAL → CAN |
-| 权限校验 | assertPermission |
-| 缓存优化 | 订阅 + 缓存 |
-| 写流程 | 校验 → 构造 → set |
+| 职责 | 鉴权、校验 config、缓存、合并订阅 |
+| 不负责 | 解析 CAN、实现 MCU 协议 |
+| 权限 | 来自 HAL 属性配置 |
+| 热路径 | subscribe + callback，不是轮询 get |
 
 ---
 
-**下一篇预告**：《MessageQueue 的 native 层 next 唤醒源码》
-
-> 配套仓库：[AAOS-Guide](https://github.com/jason5200/AAOS-Guide)
+**下一篇**：[权限与驾驶分心](../permission/car-permission.md)

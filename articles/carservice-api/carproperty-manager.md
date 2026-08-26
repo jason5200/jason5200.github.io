@@ -1,153 +1,147 @@
-# CarPropertyManager：如何读写车辆属性
+# CarPropertyManager：读写车辆属性
 
 > 系列：AAOS-Guide · 02-carservice-api
 > 难度：⭐⭐⭐ 实战
-> 更新：2026-08-17
-> 前置知识：《CarService 架构》
+> 更新：2026-08-26
+> 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
+> 前置知识：[《CarService 架构》](../car-service/carservice-architecture.md)
 
 ---
 
-## 一、什么是车辆属性（Car Property）
+车辆上能被系统建模的状态，在 AAOS 里叫 **Vehicle Property**：车速、电量、档位、HVAC 设定、VIN 等。App **只**通过 `CarPropertyManager` 碰它们。
 
-在 AAOS 里，**车辆上一切可以被读写的状态，都抽象成了「车辆属性（Car Property）」**：
+下面的 API 以 `android.car` 14 为准。网上不少示例仍写 `VEHICLE_SPEED`、`getPropertyCallback().addOnSuccessListener`，那不是这个 Manager 的接口。
 
-- 车速、续航、油量/电量、档位、里程
-- 空调温度、风量、车窗、车灯
-- 门锁状态、安全带、座椅位置
+## 一、常用属性 ID
 
-每个属性都有一个唯一 ID，例如：
+定义在 `android.car.VehiclePropertyIds`，与 HAL 的 `VehicleProperty` 对齐。
 
-| 属性 | 常量（VehiclePropertyIds） |
-|------|---------------------------|
-| 车速 | `VEHICLE_SPEED` |
-| 续航里程 | `EV_BATTERY_LEVEL` / `RANGE_REMAINING` |
-| 档位 | `GEAR_SELECTION` |
-| 空调温度 | `HVAC_TEMPERATURE_SET` |
+| 含义 | 常量 | 常见类型 |
+|------|------|----------|
+| 车速 | `PERF_VEHICLE_SPEED` | `Float`，单位 m/s |
+| 选档 | `GEAR_SELECTION` | `Integer` |
+| 续航 | `RANGE_REMAINING` | `Float`，米 |
+| 动力电池 | `EV_BATTERY_LEVEL` | `Float` |
+| 空调设定温度 | `HVAC_TEMPERATURE_SET` | `Float`，摄氏 |
+| 车厂 / 车型 | `INFO_MAKE` / `INFO_MODEL` | `String` |
 
-**核心理解**：App 不直接碰 CAN 总线，而是通过 `CarPropertyManager` 读写这些属性，由系统层（CarPropertyService → Vehicle HAL）完成与硬件的交互。
+全局属性 `areaId` 用 `0`。分区空调要用对应 Area（主驾座椅、左前等），先 `getPropertyList()` 看 `CarPropertyConfig.getAreaIds()`。
 
-## 二、CarPropertyManager 是什么
-
-`CarPropertyManager` 是 App 侧读写车辆属性的入口，属于 `android.car` 包。它通过 `Car` 对象获取：
+## 二、拿到 Manager
 
 ```kotlin
-val car = Car.createCar(context)           // 1. 创建 Car 实例
-val carPropertyManager = car.getCarManager(
-    Car.PROPERTY_SERVICE
-) as CarPropertyManager                    // 2. 拿到 CarPropertyManager
+val car = Car.createCar(context)
+if (car == null) {
+    // com.android.car 未起来，或当前用户没有车服务
+    return
+}
+val propertyManager = car.getCarManager(Car.PROPERTY_SERVICE) as CarPropertyManager
 ```
 
-> ⚠️ 使用前需在 `AndroidManifest.xml` 声明车辆权限，例如读车速：
-> ```xml
-> <uses-permission android:name="android.car.permission.CAR_SPEED" />
-> ```
+Manifest：
 
-## 三、读一个属性（同步 / 异步）
+```xml
+<uses-permission android:name="android.car.permission.CAR_SPEED" />
+```
 
-以读车速为例：
+只声明不够：很多写属性是 `signature|privileged`，普通商店应用拿不到。调试先用系统签名或 priv-app。
+
+用完 `car.disconnect()`，避免泄漏连接。
+
+## 三、读：getProperty
 
 ```kotlin
-// 同步读取（注意：可能阻塞，避免在主线程调用）
-val speedProp = carPropertyManager.getProperty(
-    Float::class.java,
-    VehiclePropertyIds.VEHICLE_SPEED,
-    0
+val speed = propertyManager.getProperty(
+    java.lang.Float::class.java,
+    VehiclePropertyIds.PERF_VEHICLE_SPEED,
+    /* areaId */ 0
 )
-
-// 异步读取（推荐）
-carPropertyManager.getPropertyCallback(
-    Float::class.java,
-    VehiclePropertyIds.VEHICLE_SPEED,
-    0
-).addOnSuccessListener { value ->
-    // value.value 就是车速（m/s）
-    Log.d(TAG, "当前车速: ${value.value} m/s")
-}.addOnFailureListener { e ->
-    Log.e(TAG, "读取失败", e)
+if (speed != null && speed.status == CarPropertyValue.STATUS_AVAILABLE) {
+    val mps = speed.value as Float
+    val kmh = mps * 3.6f
 }
 ```
 
-**注意点**：
-1. 属性有**类型**（int / float / boolean / string 等），读的时候类型要匹配。
-2. 第三个参数 `areaId`：多数属性填 `0` 表示全局；多区属性（如分区空调）需要指定区域。
-3. 读写车辆属性通常需要**系统签名权限**，普通第三方 App 有限制；系统 App 或具备 `car` 权限的 App 才可访问。
+要点：
 
-## 四、写一个属性
+- 类型必须和配置一致，否则抛 `IllegalArgumentException`。
+- 看 `CarPropertyValue.status`，不要把 `UNAVAILABLE` 当 0 速。
+- `getProperty` 会进 Binder；不要在主线程高频同步读。连续变化用订阅。
 
-以设置空调温度为例：
+## 四、写：setProperty
 
 ```kotlin
-carPropertyManager.setProperty(
-    Float::class.java,
+propertyManager.setProperty(
+    java.lang.Float::class.java,
     VehiclePropertyIds.HVAC_TEMPERATURE_SET,
-    0,
+    areaId,
     22.5f
 )
 ```
 
-写操作也有对应的回调版本 `setPropertyCallback`。写之前通常要先确认：
-- 该属性**可写**（通过 `VehiclePropertyIds` 对应的权限声明）
-- 写入值在**合法范围**内（可用 `getFloatPropertyRange` 查询范围）
+写之前用 `getCarPropertyConfig(propId)` 确认 `isWritable()`，以及 min/max。HVAC 通常要 `android.car.permission.CONTROL_CAR_CLIMATE`（特权级）。
 
-## 五、监听属性变化（重要）
+## 五、订阅：CarPropertyEventCallback
 
-车机上最常用的场景是**持续监听**某个属性（比如车速、档位变化），而不是轮询：
+这是车上最常用的路径。
 
 ```kotlin
-val listener = CarPropertyManager.OnPropertyChangedListener { values ->
-    values.forEach { value ->
-        if (value.propertyId == VehiclePropertyIds.VEHICLE_SPEED) {
-            Log.d(TAG, "车速变化: ${value.value}")
-        }
+private val speedCallback = object : CarPropertyManager.CarPropertyEventCallback {
+    override fun onChangeEvent(value: CarPropertyValue<*>) {
+        if (value.propertyId != VehiclePropertyIds.PERF_VEHICLE_SPEED) return
+        if (value.status != CarPropertyValue.STATUS_AVAILABLE) return
+        val mps = value.value as Float
+        // 更新 UI：切回主线程
+    }
+
+    override fun onErrorEvent(propId: Int, areaId: Int) {
+        // 配置没有、HAL 拒绝、权限中途被撤
     }
 }
 
-carPropertyManager.registerCallback(listener, VehiclePropertyIds.VEHICLE_SPEED, 5f)
+propertyManager.registerCallback(
+    speedCallback,
+    VehiclePropertyIds.PERF_VEHICLE_SPEED,
+    CarPropertyManager.SENSOR_RATE_UI  // 5 Hz 量级，够表盘
+)
 
-// 不用时记得注销
-// carPropertyManager.unregisterCallback(listener)
+// 页面销毁：
+propertyManager.unregisterCallback(speedCallback)
 ```
 
-`registerCallback` 的第三个参数是**采样率**（Hz），表示每秒最多回调几次。这很关键：车速这类高频属性要合理设置采样率，避免刷爆 UI。
+采样率常量（float，单位 Hz）：
 
-## 六、完整链路回顾
+| 常量 | 约值 | 用途 |
+|------|------|------|
+| `SENSOR_RATE_ONCHANGE` | 0 | 只在变更时 |
+| `SENSOR_RATE_NORMAL` | 1 | 低速状态 |
+| `SENSOR_RATE_UI` | 5 | 仪表 / 卡片 |
+| `SENSOR_RATE_FAST` | 10 | 更跟手 |
+| `SENSOR_RATE_FASTEST` | 100 | 几乎只给内部，App 慎用 |
 
-结合上一篇《CarService 架构》，一次读车速的完整链路：
+连续类型属性（车速）不订阅、去 while 循环 `getProperty`，会打满 Binder 和 VHAL。
 
-```mermaid
-sequenceDiagram
-    participant App as App
-    participant Svc as CarPropertyService
-    participant HAL as Vehicle HAL
-    App->>Svc: getProperty(VEHICLE_SPEED)（Binder）
-    Svc->>HAL: IVehicle.get(VehiclePropConfig)（AIDL）
-    HAL->>HAL: 读 CAN 总线
-    HAL-->>Svc: 返回车速
-    Svc-->>App: 结果 / 回调触发
+## 六、和 HAL 的对应关系
+
+```
+App  get/set/registerCallback
+  → CarPropertyService（鉴权、config、缓存）
+  → IVehicle.getValues / setValues / subscribe   （Android 13+ AIDL）
+  → vendor HAL
 ```
 
-## 七、常见坑与最佳实践
+旧 HIDL 文档里的 `IVehicle.get(VehiclePropValue)` 不要直接抄到 14 的实现里。
 
-| 坑 | 建议 |
+## 七、坑
+
+| 坑 | 处理 |
 |----|------|
-| 在主线程同步读属性 | 用异步 API 或切到工作线程 |
-| 类型不匹配导致异常 | 读前确认属性的数据类型 |
-| 忘记注销监听器 | `unregisterCallback`，避免内存泄漏 |
-| 采样率设太高 | 按需设置，车速 5-10Hz 足够 |
-| 权限缺失静默失败 | 检查 `android.car.permission.*` 声明 |
-
-## 八、总结
-
-| 要点 | 结论 |
-|------|------|
-| 车辆属性是什么 | 车辆硬件状态的抽象，有唯一 ID 和类型 |
-| 读写入口 | `CarPropertyManager`（通过 `Car` 获取） |
-| 三种操作 | 读（get）、写（set）、监听（registerCallback） |
-| 链路 | App → CarPropertyService → Vehicle HAL → 硬件 |
-| 关键注意 | 权限、类型匹配、采样率、注销监听 |
+| 属性 ID 写错成 `VEHICLE_SPEED` | 用 `PERF_VEHICLE_SPEED` |
+| 车速当 km/h 显示 | HAL 给的是 m/s |
+| 不看 `status` | 无信号时会显示假 0 |
+| 不 unregister | 泄漏、熄火后还在回调 |
+| 第三方 App 写车门 | 权限模型不允许，不是 API 写错 |
 
 ---
 
-**下一篇预告**：《车机多屏显示：从 Display 到 Surface 的链路》
-
-> 配套仓库：[AAOS-Guide](https://github.com/jason5200/AAOS-Guide) · 实战 Demo：[Car-Launcher-Demo](https://github.com/jason5200/Car-Launcher-Demo)
+**下一篇**：[CarPropertyService 属性通路](../car-service/carproperty-source.md)

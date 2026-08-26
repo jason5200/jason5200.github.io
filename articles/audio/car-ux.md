@@ -1,124 +1,81 @@
-# CarUxRestrictionsService：驾驶分心深入
+# CarUxRestrictions：用 bitmask 收行驶中 UI
 
 > 系列：AAOS-Guide · 01-car-service
-> 难度：⭐⭐⭐⭐ 深入
-> 更新：2026-08-27
-> 前置知识：《CarService 权限模型》
+> 难度：⭐⭐⭐ 进阶
+> 更新：2026-08-26
+> 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
+> 前置知识：[《权限与驾驶分心》](../permission/car-permission.md)
 
 ---
 
-## 一、驾驶分心问题的本质
+行驶中禁视频、禁键盘，不是 App 自己猜车速，而是 **CarUxRestrictionsService** 根据配置（可含车速、档位、停车状态）算出一份 `CarUxRestrictions`，再发给监听者。
 
-开车时，司机的注意力是稀缺资源。任何让司机分心的 UI，都可能导致事故。
+权限管「能不能调 HAL」；UX 管「屏幕上许不许出这块 UI」。两件事都要做。
 
-**CarUxRestrictionsService** 就是系统用来「限制行驶中 UI 操作」的服务，是车载安全的底线机制。
-
-## 二、分心限制的三个等级
-
-```mermaid
-flowchart TB
-    A["车辆状态"] --> B{"是否行驶中"}
-    B -->|"停车"| C["无限制"]
-    B -->|"行驶中"| D{"限制等级"}
-    D -->|"轻度"| E["禁视频/禁输入"]
-    D -->|"重度"| F["最小化交互"]
-```
-
-## 三、限制的具体内容
-
-| 限制项 | 说明 |
-|--------|------|
-| 视频播放 | 行驶中禁止 |
-| 文字输入 | 行驶中禁止键盘 |
-| 长文本显示 | 限制阅读量 |
-| 手势游戏 | 禁止 |
-
-## 四、App 查询限制状态
-
-```java
-CarUxRestrictionsManager manager = car.getCarManager(
-    Car.CAR_UX_RESTRICTION_SERVICE);
-
-CarUxRestrictions restrictions = manager.getCurrentCarUxRestrictions();
-
-// 是否需要分心优化
-boolean needOptimize = restrictions.isRequiresDistractionOptimization();
-
-// 具体的限制项
-boolean noVideo = restrictions.isNoVideo();
-boolean noText = restrictions.isNoTextEntry();
-```
-
-## 五、监听限制变化
-
-限制状态会随「停车 → 行驶 → 停车」动态变化，必须监听：
-
-```java
-CarUxRestrictionsManager.OnUxRestrictionsChangedListener listener =
-    restrictions -> {
-        if (restrictions.isRequiresDistractionOptimization()) {
-            // 进入行驶状态，简化 UI
-            optimizeForDriving();
-        } else {
-            // 停车了，恢复完整功能
-            restoreFullUI();
-        }
-    };
-
-manager.registerListener(listener);
-// 不用时注销
-manager.unregisterListener(listener);
-```
-
-## 六、UI 适配的最佳实践
-
-### 行驶中的 UI 设计
+## 一、先问要不要优化
 
 ```kotlin
-fun applyUxRestrictions(restrictions: CarUxRestrictions) {
-    if (restrictions.isRequiresDistractionOptimization()) {
-        // 行驶中：大按钮、少文字、语音优先
-        videoButton.visibility = View.GONE      // 隐藏视频
-        textInput.isEnabled = false             // 禁用输入
-        enlargeButtons()                        // 放大按钮
-        enableVoiceControl()                    // 启用语音
-    } else {
-        // 停车中：完整功能
-        videoButton.visibility = View.VISIBLE
-        textInput.isEnabled = true
-    }
+val mgr = car.getCarManager(Car.CAR_UX_RESTRICTION_SERVICE) as CarUxRestrictionsManager
+val r = mgr.currentCarUxRestrictions
+
+if (!r.isRequiresDistractionOptimization) {
+    showParkedUi()
+    return
+}
+
+val flags = r.activeRestrictions
+```
+
+`isRequiresDistractionOptimization == true` 时再看具体 bit。不要发明 `isNoVideo()` 这种 14 公开 API。
+
+## 二、常用 restriction 位
+
+以 `CarUxRestrictions` 常量为准（名字稳定，数值不必背）：
+
+| 常量 | App 该做什么 |
+|------|----------------|
+| `UX_RESTRICTIONS_NO_VIDEO` | 停播、藏播放器 |
+| `UX_RESTRICTIONS_NO_TEXT_ENTRY` | 禁用输入框 |
+| `UX_RESTRICTIONS_NO_KEYBOARD` | 不弹键盘 |
+| `UX_RESTRICTIONS_LIMIT_STRING_LENGTH` | 用 `getMaxRestrictedStringLength()` 截断 |
+| `UX_RESTRICTIONS_NO_SETUP` | 藏复杂设置 |
+| `UX_RESTRICTIONS_LIMIT_CONTENT` | 限制列表深度 / 条数（见 `getMaxContentDepth` 等） |
+
+```kotlin
+fun restricted(r: CarUxRestrictions, mask: Int) =
+    (r.activeRestrictions and mask) != 0
+
+if (restricted(r, CarUxRestrictions.UX_RESTRICTIONS_NO_VIDEO)) {
+    videoButton.visibility = View.GONE
+    stopPlayback()
 }
 ```
 
-## 七、分心限制与安全的平衡
+配置因车企 XML 而异，**不要假设**「车速 > 0 就一定 NO_VIDEO」。以回调里的 flags 为准。
 
-| 场景 | 处理 |
-|------|------|
-| 导航播报 | 允许（语音优先） |
-| 音乐切换 | 允许（简单操作） |
-| 看视频 | 禁止（行驶中） |
-| 输入地址 | 禁止（用语音替代） |
+## 三、必须监听
 
-## 八、常见坑
+```kotlin
+val listener = CarUxRestrictionsManager.OnUxRestrictionsChangedListener { restrictions ->
+    applyUx(restrictions)
+}
+mgr.registerListener(listener)
+// onDestroy:
+mgr.unregisterListener(listener)
+```
 
-| 坑 | 说明 |
-|----|------|
-| 忽略分心限制 | 车企审核不通过 |
-| 只查一次不监听 | 状态变化后 UI 不更新 |
-| 分心限制过度 | 影响可用性 |
-| 忘记注销监听 | 内存泄漏 |
+只读一次：地下车库起步后视频还在播。
 
-## 九、总结
+## 四、产品原则
 
-| 要点 | 结论 |
-|------|------|
-| 分心服务 | 限制行驶中 UI 操作 |
-| 三级限制 | 无/轻度/重度 |
-| App 适配 | 查询 + 监听状态 |
-| 安全底线 | 禁视频、禁输入、语音优先 |
+| 允许（通常） | 禁止（行驶中常见） |
+|--------------|-------------------|
+| 导航语音、简单切曲、大按钮调温 | 视频、打字搜地点、深层设置 |
+
+语音能否用看 `NO_VOICE` 等 bit，不要和音频焦点混为一谈。
+
+服务侧映射规则在 CarService 的 UX restriction 配置里，改策略是系统镜像的事，不是每个 App 自己读 `PERF_VEHICLE_SPEED` 做一遍。
 
 ---
 
-**下一篇预告**：《Vehicle HAL 深入：从 AIDL 到实现》
-
-> 配套仓库：[AAOS-Guide](https://github.com/jason5200/AAOS-Guide)
+**下一篇**：[Vehicle HAL](../permission/vehicle-hal.md)

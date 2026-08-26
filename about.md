@@ -4,7 +4,7 @@
 
 **Jason**，一名专注智能座舱与 Android 系统的工程师。
 
-- 🚗 **车载 Android（AAOS）**：智能座舱系统、CarService、多屏、性能优化
+- 🚗 **车载中间件（AAOS）**：Vehicle HAL、CarService、车辆属性、电源 / 音频
 - ⚙️ **Android Framework**：Binder、Handler、AMS/WMS、渲染机制
 - 🤖 **AI 上车**：大模型端侧推理、Agent、车载语音
 
@@ -20,7 +20,7 @@
 
 | 项目 | 说明 |
 |------|------|
-| [AAOS-Guide](https://github.com/jason5200/AAOS-Guide) | 📖 车载 Android 学习路线与实战教程 |
+| [AAOS-Guide](https://github.com/jason5200/AAOS-Guide) | 📖 车载中间件学习路线（Vehicle HAL / CarService / 车辆属性） |
 | [Framework-Source-Note](https://github.com/jason5200/Framework-Source-Note) | 📚 Android Framework 源码精读笔记 |
 | [Car-Launcher-Demo](https://github.com/jason5200/Car-Launcher-Demo) | 🧩 车机 Launcher 实战 Demo |
 | [AI-Android-Demo](https://github.com/jason5200/AI-Android-Demo) | 🤖 大模型 × Android 落地示例 |

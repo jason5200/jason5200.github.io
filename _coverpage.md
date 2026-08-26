@@ -1,11 +1,11 @@
 # 码上座舱
 
-> 车载 Android · Framework 源码 · AI 上车
+> 车载中间件 · Framework 源码 · AI 上车
 
-- 车载主线 28 篇 · Framework 48 篇 · AI 选读 41 篇
+- 中间件主线：Vehicle HAL → CarService → 车辆属性
 - 源码默认对照 AOSP `android-14.0.0_r67`
 - Demo 会标明 Mock 还是真实后端
 
 [开始阅读](README.md)
-[车载主线](series/aaos.md)
+[中间件地图](articles/00-overview/middleware.md)
 [GitHub](https://github.com/jason5200)
