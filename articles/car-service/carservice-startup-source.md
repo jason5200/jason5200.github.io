@@ -4,7 +4,7 @@
 > 难度：⭐⭐⭐⭐ 深入
 > 更新：2026-08-26
 > 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
-> 前置知识：[《CarService 架构》](carservice-architecture.md)
+> 前置知识：[《CarService 架构》](/articles/car-service/carservice-architecture.md)
 
 ---
 
@@ -113,4 +113,4 @@ adb shell dumpsys android.hardware.automotive.vehicle.IVehicle/default
 
 ---
 
-**下一篇**：[CarPropertyManager：读写车辆属性](../carservice-api/carproperty-manager.md)
+**下一篇**：[CarPropertyManager：读写车辆属性](/articles/carservice-api/carproperty-manager.md)

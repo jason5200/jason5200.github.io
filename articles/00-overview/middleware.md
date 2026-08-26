@@ -4,7 +4,7 @@
 > 难度：⭐⭐ 进阶
 > 更新：2026-08-26
 > 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
-> 前置知识：[《AAOS 到底是什么》](aaos-intro.md)
+> 前置知识：[《AAOS 到底是什么》](/articles/00-overview/aaos-intro.md)
 
 ---
 
@@ -84,12 +84,12 @@ adb shell dumpsys android.hardware.automotive.vehicle.IVehicle/default
 
 ## 六、建议阅读顺序
 
-1. [CarService 架构](../car-service/carservice-architecture.md) — 进程与子服务
-2. [CarPropertyManager](../carservice-api/carproperty-manager.md) — 先把客户端 API 用对
-3. [Vehicle HAL](../permission/vehicle-hal.md) — 再看契约
-4. [CarPropertyService](../car-service/carproperty-source.md) — 中间这一跳
-5. [权限与分心](../permission/car-permission.md) · [电源](../audio/car-power.md) · [音频](../audio/car-audio-service.md)
+1. [CarService 架构](/articles/car-service/carservice-architecture.md) — 进程与子服务
+2. [CarPropertyManager](/articles/carservice-api/carproperty-manager.md) — 先把客户端 API 用对
+3. [Vehicle HAL](/articles/permission/vehicle-hal.md) — 再看契约
+4. [CarPropertyService](/articles/car-service/carproperty-source.md) — 中间这一跳
+5. [权限与分心](/articles/permission/car-permission.md) · [电源](/articles/audio/car-power.md) · [音频](/articles/audio/car-audio-service.md)
 
 ---
 
-**下一篇**：[CarService 架构：从 SystemServer 到车辆服务](../car-service/carservice-architecture.md)
+**下一篇**：[CarService 架构：从 SystemServer 到车辆服务](/articles/car-service/carservice-architecture.md)

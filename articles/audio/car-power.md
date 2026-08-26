@@ -4,7 +4,7 @@
 > 难度：⭐⭐⭐⭐ 深入
 > 更新：2026-08-26
 > 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
-> 前置知识：[《CarService 启动流程》](../car-service/carservice-startup-source.md)
+> 前置知识：[《CarService 启动流程》](/articles/car-service/carservice-startup-source.md)
 
 ---
 
@@ -85,4 +85,4 @@ CPMS 会跟 Vehicle HAL 做电源握手（关机推迟、深度睡眠入口等�
 
 ---
 
-**下一篇**：[CarAudioService](car-audio-service.md)
+**下一篇**：[CarAudioService](/articles/audio/car-audio-service.md)

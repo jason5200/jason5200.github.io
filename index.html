@@ -29,7 +29,7 @@
       subMaxLevel: 3,
       coverpage: true,
       auto2top: true,
-      relativePath: true,
+      relativePath: false,
       alias: {
         '/.*/_sidebar.md': '/_sidebar.md',
         '/middleware': '/articles/00-overview/middleware.md',
@@ -108,6 +108,43 @@
     };
   </script>
 
+  <script>
+    // Docsify hash 路由不会解析 .. ，把错误短链改到 /articles/...
+    (function () {
+      var hash = location.hash || '';
+      var raw = hash.replace(/^#\/?/, '').replace(/\.md$/, '');
+      if (!raw) return;
+      var shorts = {
+        middleware: 'articles/00-overview/middleware',
+        'aaos-intro': 'articles/00-overview/aaos-intro'
+      };
+      if (shorts[raw]) {
+        location.replace('#/' + shorts[raw]);
+        return;
+      }
+      if (raw.indexOf('..') === -1) return;
+      var parts = raw.split('/');
+      var stack = [];
+      for (var i = 0; i < parts.length; i++) {
+        var p = parts[i];
+        if (!p || p === '.') continue;
+        if (p === '..') {
+          stack.pop();
+          continue;
+        }
+        stack.push(p);
+      }
+      var folders = {
+        'car-service': 1, 'carservice-api': 1, audio: 1, permission: 1,
+        '00-overview': 1, framework: 1, ai: 1, rag: 1, perf: 1, ota: 1,
+        'multi-display': 1, agent: 1, multimodal: 1
+      };
+      if (stack[0] && folders[stack[0]]) {
+        stack.unshift('articles');
+      }
+      location.replace('#/' + stack.join('/'));
+    })();
+  </script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>

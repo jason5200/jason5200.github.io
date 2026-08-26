@@ -4,7 +4,7 @@
 > 难度：⭐⭐⭐ 实战
 > 更新：2026-08-26
 > 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
-> 前置知识：[《CarService 架构》](../car-service/carservice-architecture.md)
+> 前置知识：[《CarService 架构》](/articles/car-service/carservice-architecture.md)
 
 ---
 
@@ -144,4 +144,4 @@ App  get/set/registerCallback
 
 ---
 
-**下一篇**：[CarPropertyService 属性通路](../car-service/carproperty-source.md)
+**下一篇**：[CarPropertyService 属性通路](/articles/car-service/carproperty-source.md)

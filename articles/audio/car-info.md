@@ -4,7 +4,7 @@
 > 难度：⭐⭐ 进阶
 > 更新：2026-08-26
 > 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
-> 前置知识：[《CarPropertyManager》](../carservice-api/carproperty-manager.md)
+> 前置知识：[《CarPropertyManager》](/articles/carservice-api/carproperty-manager.md)
 
 ---
 
@@ -63,4 +63,4 @@ val yearVal = pm.getProperty(
 
 ---
 
-**下一篇**：[驾驶分心 UX Restrictions](car-ux.md)
+**下一篇**：[驾驶分心 UX Restrictions](/articles/audio/car-ux.md)

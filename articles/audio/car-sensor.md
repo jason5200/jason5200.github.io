@@ -9,7 +9,7 @@
 ---
 
 > **API 状态（先看这个）**  
-> `CarSensorManager` / `CarSensorService` 是旧接口。AAOS 现行做法是把车速、油量、档位等做成 **Vehicle Property**，用 `CarPropertyManager` 读写（见 [carproperty-manager.md](../carservice-api/carproperty-manager.md)）。  
+> `CarSensorManager` / `CarSensorService` 是旧接口。AAOS 现行做法是把车速、油量、档位等做成 **Vehicle Property**，用 `CarPropertyManager` 读写（见 [carproperty-manager.md](/articles/carservice-api/carproperty-manager.md)）。  
 > 下面保留旧 API 只为读历史代码和旧项目；**新代码不要再注册 `CarSensorManager`。**
 
 ## 一、车辆信号 vs 手机传感器
@@ -135,4 +135,4 @@ propertyManager.registerCallback(callback,
 
 ---
 
-**下一篇**：[车辆静态信息也走 Property](car-info.md)
+**下一篇**：[车辆静态信息也走 Property](/articles/audio/car-info.md)

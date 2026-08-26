@@ -4,7 +4,7 @@
 > 难度：⭐⭐⭐ 进阶
 > 更新：2026-08-26
 > 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
-> 前置知识：[《权限与驾驶分心》](../permission/car-permission.md)
+> 前置知识：[《权限与驾驶分心》](/articles/permission/car-permission.md)
 
 ---
 
@@ -78,4 +78,4 @@ mgr.unregisterListener(listener)
 
 ---
 
-**下一篇**：[Vehicle HAL](../permission/vehicle-hal.md)
+**下一篇**：[Vehicle HAL](/articles/permission/vehicle-hal.md)

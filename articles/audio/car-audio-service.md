@@ -4,7 +4,7 @@
 > 难度：⭐⭐⭐⭐ 深入
 > 更新：2026-08-26
 > 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
-> 前置知识：[《中间件地图》](../00-overview/middleware.md)
+> 前置知识：[《中间件地图》](/articles/00-overview/middleware.md)
 
 ---
 
@@ -99,4 +99,4 @@ adb shell dumpsys car_service
 
 ---
 
-**下一篇**：[空调：走 CarPropertyManager](car-hvac.md)
+**下一篇**：[空调：走 CarPropertyManager](/articles/audio/car-hvac.md)

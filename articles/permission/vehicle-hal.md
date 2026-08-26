@@ -4,7 +4,7 @@
 > 难度：⭐⭐⭐⭐ 深入
 > 更新：2026-08-26
 > 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
-> 前置知识：[《中间件地图》](../00-overview/middleware.md)、[《CarPropertyManager》](../carservice-api/carproperty-manager.md)
+> 前置知识：[《中间件地图》](/articles/00-overview/middleware.md)、[《CarPropertyManager》](/articles/carservice-api/carproperty-manager.md)
 
 ---
 
@@ -109,4 +109,4 @@ adb shell dumpsys android.hardware.automotive.vehicle.IVehicle/default
 
 ---
 
-**下一篇**：[CarPropertyService 属性通路](../car-service/carproperty-source.md)
+**下一篇**：[CarPropertyService 属性通路](/articles/car-service/carproperty-source.md)

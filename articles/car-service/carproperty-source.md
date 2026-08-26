@@ -4,7 +4,7 @@
 > 难度：⭐⭐⭐⭐ 深入
 > 更新：2026-08-26
 > 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
-> 前置知识：[《CarPropertyManager》](../carservice-api/carproperty-manager.md)、[《Vehicle HAL》](../permission/vehicle-hal.md)
+> 前置知识：[《CarPropertyManager》](/articles/carservice-api/carproperty-manager.md)、[《Vehicle HAL》](/articles/permission/vehicle-hal.md)
 
 ---
 
@@ -119,4 +119,4 @@ CarPropertyService 依赖 Vehicle 通路已经 `getAllPropConfigs` 成功。电�
 
 ---
 
-**下一篇**：[权限与驾驶分心](../permission/car-permission.md)
+**下一篇**：[权限与驾驶分心](/articles/permission/car-permission.md)

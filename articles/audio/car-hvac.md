@@ -4,7 +4,7 @@
 > 难度：⭐⭐⭐ 进阶
 > 更新：2026-08-26
 > 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
-> 前置知识：[《CarPropertyManager》](../carservice-api/carproperty-manager.md)
+> 前置知识：[《CarPropertyManager》](/articles/carservice-api/carproperty-manager.md)
 
 ---
 
@@ -26,7 +26,7 @@ HVAC（采暖 / 通风 / 空调）在座舱里控件多，但中间件模型很�
 | `HVAC_POWER_ON` | Boolean | 空调系统电源 |
 | `HVAC_TEMPERATURE_DISPLAY_UNITS` | Int | 界面用 °C / °F，设定值仍以 HAL 单位为准 |
 
-写设定需要 `android.car.permission.CONTROL_CAR_CLIMATE`（特权级）。行驶中 UI 还要听 [UxRestrictions](car-ux.md)。
+写设定需要 `android.car.permission.CONTROL_CAR_CLIMATE`（特权级）。行驶中 UI 还要听 [UxRestrictions](/articles/audio/car-ux.md)。
 
 ## 二、areaId 不是 0=主驾、1=副驾
 
@@ -86,4 +86,4 @@ val set = pm.getProperty(
 
 ---
 
-**下一篇**：[车辆信息也走 Property](car-info.md)
+**下一篇**：[车辆信息也走 Property](/articles/audio/car-info.md)

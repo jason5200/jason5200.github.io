@@ -4,7 +4,7 @@
 > 难度：⭐⭐ 进阶
 > 更新：2026-08-26
 > 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
-> 前置知识：[《中间件地图》](../00-overview/middleware.md)
+> 前置知识：[《中间件地图》](/articles/00-overview/middleware.md)
 
 ---
 
@@ -110,4 +110,4 @@ HIDL `IVehicle@2.0` 的 `get()/set()` 只在旧分支上当历史看。本仓库
 
 ---
 
-**下一篇**：[CarService 启动流程](carservice-startup-source.md)
+**下一篇**：[CarService 启动流程](/articles/car-service/carservice-startup-source.md)

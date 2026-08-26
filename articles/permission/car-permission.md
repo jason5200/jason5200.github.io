@@ -4,7 +4,7 @@
 > 难度：⭐⭐⭐ 进阶
 > 更新：2026-08-26
 > 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
-> 前置知识：[《CarPropertyManager》](../carservice-api/carproperty-manager.md)
+> 前置知识：[《CarPropertyManager》](/articles/carservice-api/carproperty-manager.md)
 
 ---
 
@@ -104,8 +104,8 @@ propertyManager.setProperty(
 | 只做权限、不做 UX | 车企审核 / 合规过不了 |
 | UX 和权限混成一个 Manager | Property 管信号，UxRestrictions 管 UI |
 
-更细的 UI 适配见 [CarUxRestrictions](../audio/car-ux.md)。
+更细的 UI 适配见 [CarUxRestrictions](/articles/audio/car-ux.md)。
 
 ---
 
-**下一篇**：[CarPowerManagementService](../audio/car-power.md)
+**下一篇**：[CarPowerManagementService](/articles/audio/car-power.md)
