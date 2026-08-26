@@ -1,6 +1,6 @@
 # 文章归档
 
-> 按系列归档，共 **118 篇**。车载主线 29 篇，Framework 48 篇，AI（含选读）41 篇。
+> 按系列归档，共 **122 篇**。车载主线 29 篇，联发科 4 篇，Framework 48 篇，AI（含选读）41 篇。
 
 ---
 
@@ -39,6 +39,19 @@
 | [模拟器与 HIL](/articles/perf/testing.md) |
 
 导读：[series/aaos.md](/series/aaos.md)
+
+---
+
+## 联发科座舱（MTK）· 4 篇
+
+| 文章 |
+|------|
+| [BSP 接到 AAOS 的哪一层](/articles/mtk/mtk-aaos-map.md) |
+| [启动：Preloader 到 Android](/articles/mtk/mtk-boot.md) |
+| [AEE：死机和 NE](/articles/mtk/mtk-aee.md) |
+| [音频接到 CarAudioService](/articles/mtk/mtk-audio.md) |
+
+导读：[series/mtk.md](/series/mtk.md)
 
 ---
 

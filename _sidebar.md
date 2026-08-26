@@ -36,6 +36,13 @@
   - [车载内存优化：低内存设备](/articles/perf/memory-optimization.md)
   - [车载测试：模拟器与 HIL 测试](/articles/perf/testing.md)
 
+- 🔧 联发科座舱（MTK）
+  - [系列导读](/series/mtk.md)
+  - [BSP 接到 AAOS 的哪一层](/articles/mtk/mtk-aaos-map.md)
+  - [启动：Preloader 到 Android](/articles/mtk/mtk-boot.md)
+  - [AEE：死机和 NE](/articles/mtk/mtk-aee.md)
+  - [音频接到 CarAudioService](/articles/mtk/mtk-audio.md)
+
 - 📚 Android Framework
   - [系列导读](/series/framework.md)
   - [Binder 机制总览：为什么 Android 用它做 IPC](/articles/framework/binder-overview.md)
