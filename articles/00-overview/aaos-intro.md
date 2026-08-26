@@ -43,7 +43,7 @@ Vehicle HAL（AIDL IVehicle）
 网关 / ECU / 总线
 ```
 
-中间件主干是 **车辆属性（Property）**。空调、VIN、车速都走 `CarPropertyManager`；旧的 Hvac / Sensor / Info Manager 已废弃。下一篇请先读 [中间件地图](middleware.md)。
+中间件主干是 **车辆属性（Property）**。空调、VIN、车速都走 `CarPropertyManager`；旧的 Hvac / Sensor / Info Manager 已废弃。下一篇请先读 [中间件地图](/articles/00-overview/middleware.md)。
 
 ## 三、AAOS 与手机 Android 的 5 个本质区别
 
@@ -95,7 +95,7 @@ AAOS 的 App 要在 `AndroidManifest.xml` 里声明自己是「汽车应用」�
 不要一上来就啃源码，按这个顺序更高效：
 
 1. **建立全景**（本文）—— 知道 AAOS 是什么、和手机的区别
-2. **中间件地图** —— [middleware.md](middleware.md)
+2. **中间件地图** —— [middleware.md](/articles/00-overview/middleware.md)
 3. **跑一个 AAOS 模拟器** —— 亲手看 `dumpsys car_service`
 4. **CarService 架构 + Property API** —— 读/写/订阅一条属性
 5. **Vehicle HAL** —— 再看契约和 vendor 该改哪
@@ -112,4 +112,4 @@ AAOS 的 App 要在 `AndroidManifest.xml` 里声明自己是「汽车应用」�
 
 ---
 
-**下一篇**：[车载中间件地图](middleware.md)
+**下一篇**：[车载中间件地图](/articles/00-overview/middleware.md)
