@@ -1,13 +1,18 @@
-# CarSensorService：车辆传感器数据
+# 车辆传感器数据：从 CarSensorManager 到 CarPropertyManager
 
 > 系列：AAOS-Guide · 01-car-service
 > 难度：⭐⭐⭐ 进阶
-> 更新：2026-08-27
+> 更新：2026-08-26
+> 对照：[AOSP android-14.0.0_r67](https://github.com/jason5200/AAOS-Guide/blob/main/AOSP_VERSION.md)
 > 前置知识：《CarService 架构》《CarPropertyManager》
 
 ---
 
-## 一、车辆传感器 vs 手机传感器
+> **API 状态（先看这个）**  
+> `CarSensorManager` / `CarSensorService` 是旧接口。AAOS 现行做法是把车速、油量、档位等做成 **Vehicle Property**，用 `CarPropertyManager` 读写（见 [CarPropertyManager](../carservice-api/carproperty-manager.md)）。  
+> 下面保留旧 API 只为读历史代码和旧项目；**新代码不要再注册 `CarSensorManager`。**
+
+## 一、车辆信号 vs 手机传感器
 
 手机的传感器（加速度计、陀螺仪）用于感知手机姿态。车辆的传感器完全不同：
 
@@ -66,14 +71,12 @@ CarSensorManager.OnSensorChangedListener listener = new CarSensorManager.OnSenso
     }
 };
 
-// 注册监听，指定采样率
 sensorManager.registerListener(
     listener,
     CarSensorManager.SENSOR_TYPE_CAR_SPEED,
     CarSensorManager.SENSOR_RATE_NORMAL
 );
 
-// 不用时注销
 sensorManager.unregisterListener(listener);
 ```
 
@@ -106,17 +109,28 @@ flowchart LR
 | 忽略数据单位 | 车速是 m/s 不是 km/h |
 | 权限缺失 | 需要 CAR_SPEED 等权限 |
 
-## 九、总结
+## 九、新项目应该怎么写
+
+```java
+CarPropertyManager propertyManager =
+        (CarPropertyManager) car.getCarManager(Car.PROPERTY_SERVICE);
+
+propertyManager.registerCallback(callback,
+        VehiclePropertyIds.PERF_VEHICLE_SPEED,
+        CarPropertyManager.SENSOR_RATE_NORMAL);
+```
+
+属性 ID、权限和区域（AreaId）以你的 Vehicle HAL 配置为准。
+
+## 十、总结
 
 | 要点 | 结论 |
 |------|------|
-| 车辆传感器 | 车速/油量/胎压等 |
-| 读取方式 | getLatestSensorEvent |
-| 监听方式 | registerListener |
-| 注意 | 单位、采样率、注销 |
+| 现行 API | `CarPropertyManager` |
+| 旧 API | `CarSensorManager`（不要用在新代码） |
+| 数据来源 | Vehicle HAL → CarService |
+| 注意 | 单位、采样率、注销回调、权限 |
 
 ---
 
-**下一篇预告**：《CarInfoService：车辆静态信息》
-
-> 配套仓库：[AAOS-Guide](https://github.com/jason5200/AAOS-Guide)
+**下一篇**：[CarInfoService：车辆静态信息](car-info.md)
